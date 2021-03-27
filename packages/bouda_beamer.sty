@@ -1,0 +1,21 @@
+\definecolor{issueblockcolor}{RGB}{255,165,0}
+\definecolor{validationblockcolor}{RGB}{0,153,0}
+
+\newenvironment{colorblock}[3]
+{\setbeamercolor{block title example}{bg=#1,fg=white}
+\begin{minipage}{#2\textwidth}
+\begin{exampleblock}{#3}}
+{\end{exampleblock}
+\end{minipage}}
+
+\newenvironment{defaultblock}[2]
+{\begin{colorblock}{cea_rouge}{#1}{#2}}
+{\end{colorblock}}
+
+\newenvironment{issueblock}[2]
+{\begin{colorblock}{issueblockcolor}{#1}{#2}}
+{\end{colorblock}}
+
+\newenvironment{validationblock}[2]
+{\begin{colorblock}{validationblockcolor}{#1}{#2}}
+{\end{colorblock}}

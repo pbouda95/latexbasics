@@ -34,6 +34,7 @@
 \usepackage{media9}
 \usepackage{animate}
 \usepackage{setspace}
+\usepackage{epx2tex}
 %\usepackage{enumitem}
 %\setlist[itemize]{label=$\checkmark$}
 
@@ -82,7 +83,7 @@
 \newenvironment{codefont}{\fontfamily{lmtt}\selectfont}{\par}
 \DeclareTextFontCommand{\textcodefont}{\codefont}
 \newcommand{\codebox}[1]{{\setlength{\fboxsep}{2pt}\colorbox{black!25}{\textcodefont{#1}}}}
-\newcommand{\context}[1]{\newcommand{\presentationcontext}{#1}}
+
 
 \newcommand{\padnum}[2]{%
   \ifnum#1>1 \ifnum#2<10 0\fi

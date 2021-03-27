@@ -1,52 +1,4 @@
-\makeatletter
-% --- a couple of switches to keep track of the context ---
-% this switch will be set if we have encountered visible character on the current line
-\newif\ifVisCharOccured@homebrew@
-% this switch will be set when we're inside a one-line comment
-\newif\ifinlcom@homebrew@
-
-% flip the switch if visible characters occur on the line
-\lst@AddToHook{PostOutput}
-{%
-  \lst@ifwhitespace%
-  \else
-    \global\VisCharOccured@homebrew@true%
-  \fi
-}
-
-% reset switches at the end of each line
-\lst@AddToHook{InitVarsEOL}
-{%
-  \global\inlcom@homebrew@false%
-  \global\VisCharOccured@homebrew@false%
-}
-
-% reset switches at the beginning of each listing
-\lst@AddToHook{PreInit}
-{%
-  \VisCharOccured@homebrew@false
-  \inlcom@homebrew@false
-}
-
-% helper macro to handle instances of `*'
-\newcommand\processlcom@homebrew
-{%
-  % if we're already inside a comment, we keep applying the comment style
-  \ifinlcom@homebrew@%
-    \lst@commentstyle%
-  \else
-    % Otherwise, we apply the comment style only if no visible characters have
-    % been encountered before the `*' on the current line.
-    \ifVisCharOccured@homebrew@%
-    \else
-      \global\inlcom@homebrew@true%
-      \lst@commentstyle%
-    \fi
-  \fi
-}
-
-
-\newcommand{\epxtheme}[1]{
+\RequirePackage{code2tex}
 
 \lstdefinelanguage{europlexus}
 {
@@ -3081,10 +3033,7 @@ morekeywords={
 		ZONES,
 		ZOOM,
 		ZZER,
-		GMAP,
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-#1
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		GMAP,TSAV,
 },
 sensitive=true, % keywords are not case-sensitive
 morecomment=[l]{* }
@@ -3120,5 +3069,3 @@ morestring=[b]'
     }
     
 \lstset{style=europlexusstyle}
-    
-} 
