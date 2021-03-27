@@ -1,0 +1,127 @@
+\documentclass[dyn,rt]{docDM2S}
+\settitre{Mon titre qui est très long : \\ Sous-titre éventuel}
+\settitrecourt{Mon titre court}
+\setauteur{Auteur 1}
+\setauteurfonction{Auteur 2}{Fonction 2}
+\showauteur{2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% OBLIGATOIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\setnumero{UU-VVV}
+\setverificateur{Verificateur 1 }{Fonction V}
+\setreferencesinterne{DOB}{Domaine}{Projet}{X-XXXX-YY-ZZ-UU-VZ}
+\setresume{Mon résumé.}
+\setmotscles{Mot Clef1, Mot Clef2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% FACAULTATIF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% \setreferencesaction{\textcolor{green}{\footnotesize \textbackslash setreferencesaction\{1\}\{2\}\{3\}--Arg1--}}{\textcolor{green}{\footnotesize --Arg2-- Demander au chef de projet}}{\textcolor{green}{\footnotesize --Arg3-- Demander au chef de projet}}
+% \setjalon{\textcolor{green}{{\footnotesize \textbackslash setjalon\{1\}\{2\}--Arg1--}}}{\textcolor{green}{\footnotesize --Arg2--}}
+% \setdelaiconfidentialite{\textcolor{green}{{\footnotesize \textbackslash setdelaiconfidentialite\{DELAI\}}}}
+% \setcahierlaboratoire{\textcolor{green}{{\footnotesize \textbackslash setcahierlaboratoire\{NUMERO\}}}}
+% \setvisa{\textcolor{green}{\textbackslash setvisa\{\}\{\}---Arg~1---}}{\textcolor{green}{---Arg~2---}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% DIFFUSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% \setdiffusioninterne{
+%   \begin{tabular}[!H]{ll}
+%     DEN/DANS/DM2S : & Tous agents : mise à disposition sur l'intranet \textbf{http://www-dm2si.cea.fr/Qualite/index.php?id=60}\\
+%   \end{tabular}
+% }
+% \setdiffusioninterne{
+%  \begin{tabular}[!H]{lll}
+% %    \textbf{CEA SACLAY}      &  &\\
+%    Benoit Prabel                       & DEN/DANS/DM2S/SEMT/DYN    &   \\
+%    Thomas Laporte, Chef de Laboratoire & DEN/DANS/DM2S/SEMT/DYN    &   \\
+%    Stéphane Marie, Chef de Laboratoire & DEN/DANS/DM2S/SEMT/LISN   &   \\
+%    Xavier Averty, Chef de Service      & DEN/DANS/DM2S/SEMT/DIR    &   \\
+%    Eric Proust, Chef de Département    & DEN/DANS/DM2S/DIR         &   \\
+%    Richard Lenain, Adjoint du chef de Département    & DEN/DANS/DM2S/DIR         &   \\
+%    Clémentine Jacquemoud               & DEN/DANS/DM2S/SEMT/LISN   &   \\
+%    Tamara Yuritzinn                    & DEN/DANS/DM2S/SEMT/LISN   &   \\
+%    Jean-Luc Fayard, Chef de Laboratoire& DEN/DANS/DM2S/SEMT/LM2S   &   \\
+%    Serge Pascal                        & DEN/DANS/DM2S/SEMT/LM2S   &   \\
+%    Cécile Chaigneau, Chef de Projet    & DEN/DANS/DM2S/DIR         &   \\
+% \end{tabular}
+% }
+
+% \setdiffusionexterne{
+%   \begin{tabular}[!H]{ll}
+%     Toto Titi & AREVA/TA\\
+%   \end{tabular}
+% }
+
+% \setdiffusionresume{
+%   \begin{tabular}[!H]{ll}
+%     les chefs des deux autres services DEN/DANS/DM2S/Service/DIR\\
+%   \end{tabular}
+% }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Listes des Tables/Figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \nolistoffigures
+% \nolistoftables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{document}
+
+% \newpage
+% \include{Introduction}
+% on utilise un seul fichier ici mai il est possible (evidemment)
+% de decouper en plusieurs .tex (Introduction.tex par ex.)
+\section*{Introduction}
+
+ bla bla bla ...
+
+\section{Section 1 : Mécanique}
+
+\subsection{Subsection 1.1}
+
+L'équation de la dynamique est la suivante~:
+\begin{equation}
+  F^{int}(\sigma) + M \ddot{u} = F^{ext}
+\end{equation}
+
+\subsection{Subsection 1.2}
+
+L'équation de comportement élastique 1D est~:
+\begin{equation}
+  \sigma = E \epsilon
+\end{equation}
+
+
+\section{Section 2 : Electricité}
+
+\subsection{Subsection 2.1} 
+
+La puissance électrique est :
+\begin{equation}
+  P = U \cdot I
+\end{equation}
+
+\subsection{Subsection 2.2}
+
+La tension d'une 'résistance électrique vaut :
+\begin{equation}
+  U = R \cdot I
+\end{equation}
+
+
+%\include{Conclusion}
+\section*{Conclusion}
+
+Ce rapport présente des formules scientifiques de haut niveau.
+
+
+
+\end{document}
+

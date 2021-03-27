@@ -1,0 +1,341 @@
+%------- prelim_beamer ---------
+\usepackage{pgfpages}
+%\pgfpagesuselayout{resize to}[a4paper,border shrink=5mm,landscape]
+%\pgfpagesuselayout{resize to}[letterpaper, landscape]
+%\pgfpagesuselayout{resize to}[a4paper, landscape]
+%\usetheme{CambridgeUS}
+
+%si cea \usetheme{cea}
+
+%\usepackage[utf8]{inputenc}
+%\usepackage[francais]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathtools} % pour *smallmatrix, Aboxed
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{multirow}
+\usepackage{wasysym} %pour les smiley
+%\usepackage{enumitem} ==> error
+%\setlist[itemize]{leftmargin=0pt}
+%\setlist[enumerate]{leftmargin=0pt}
+\usepackage{textcomp} % symboles unicode hors math (Commande \textmu ou \textdegree par ex.) ; a utiliser avec [T1]{fontenc}
+
+
+\usepackage{filecontents,animate}
+\RequirePackage{ifthen}
+\newif\ifincludeanimation
+\includeanimationfalse
+%\includeanimationtrue
+
+\usepackage{tikz}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%     couleurs      %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\definecolor{grisclair}{rgb}{0.999,0.999,0.999}
+\definecolor{gris05}{rgb}{0.5,0.5,0.5}
+\definecolor{gris}{rgb}{0.3,0.3,0.3}
+\definecolor{orange}{rgb}{0.8,0.4,0}
+\definecolor{vert}{rgb}{0,0.5,0}
+\definecolor{rouge}{rgb}{0.7,0,0}
+\definecolor{purple}{rgb}{0.5,0.2,0.8}
+\definecolor{violet}{rgb}{0.5,0.1,0.5}
+\definecolor{bleu}{rgb}{0.0,0.1,0.5}
+\definecolor{bleujoli}{rgb}{0.3,0.5,0.9}
+\definecolor{bleuciel}{rgb}{0.2,0.2,0.9}
+\definecolor{dodge}{rgb}{0.12,0.56,1.0}
+\definecolor{ocre}{rgb}{0.5,0.1,0.0}
+%\definecolor{light-blue}{cmyk}{0.15,0,0,0}
+\definecolor{light-blue}{rgb}{0.9,0.95,1.}
+\definecolor{vertjoli}{rgb}{0.2,0.5,0.25}
+\definecolor{vertclair}{rgb}{1.,1.,0.9}
+\definecolor{roseclair}{rgb}{1.,0.92,0.98}
+\definecolor{orangeclair}{rgb}{1.0000 0.7000 0.3000} %{1.0000 0.8431 0.0000}
+%couleurs Cast3M
+\definecolor{NOIR}{rgb}{0.0000 0.0000 0.0000}
+\definecolor{BLEU}{rgb}{0.0000 0.0000 1.0000}
+\definecolor{ROUG}{rgb}{1.0000 0.0000 0.0000}
+\definecolor{ROSE}{rgb}{1.0000 0.0000 1.0000}
+\definecolor{VERT}{rgb}{0.0000 1.0000 0.0000}
+\definecolor{TURQ}{rgb}{0.0000 0.8078 0.8196}
+\definecolor{JAUN}{rgb}{1.0000 1.0000 0.0000}
+\definecolor{BLAN}{rgb}{1.0000 1.0000 1.0000}
+\definecolor{NOIR}{rgb}{0.0000 0.0000 0.0000}
+\definecolor{VIOL}{rgb}{0.5804 0.0000 0.8274}
+\definecolor{ORAN}{rgb}{1.0000 0.6471 0.0000}
+\definecolor{AZUR}{rgb}{0.1176 0.5647 1.0000}
+\definecolor{OCEA}{rgb}{0.2353 0.7020 0.4431}
+\definecolor{CYAN}{rgb}{0.5294 0.8078 0.9804}
+\definecolor{OLIV}{rgb}{0.6039 0.8039 0.1961}
+\definecolor{GRIS}{rgb}{0.7450 0.7450 0.7450}
+\definecolor{POUR}{rgb}{0.8157 0.1255 0.5647}
+\definecolor{BRUN}{rgb}{0.5451 0.2706 0.0745}
+\definecolor{BRIQ}{rgb}{0.6980 0.1333 0.1333}
+\definecolor{CORA}{rgb}{1.0000 0.5000 0.3137}
+\definecolor{BEIG}{rgb}{0.9607 0.8706 0.7019}
+\definecolor{OR}{rgb}{1.0000 0.8431 0.0000}
+\definecolor{MARI}{rgb}{0.0000 0.0000 0.5000}
+\definecolor{BOUT}{rgb}{0.0000 0.3921 0.0000}
+\definecolor{LIME}{rgb}{0.5000 1.0000 0.0000}
+\definecolor{LAVA}{rgb}{0.9019 0.9019 0.9803}
+\definecolor{BRON}{rgb}{0.8549 0.6470 0.1254}
+\definecolor{KAKI}{rgb}{0.9411 0.9019 0.5490}
+\definecolor{PEAU}{rgb}{1.0000 0.7137 0.7568}
+\definecolor{CARA}{rgb}{0.8039 0.5215 0.2470}
+\definecolor{INDI}{rgb}{0.2941 0.0000 0.5882}
+
+\usepackage{xcolor} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{verbatim}
+\usepackage{graphicx,subfig,wrapfig}                    % permet d'inserer des images .eps, des sous-figures et des figures entourees de texte
+\captionsetup[subfigure]{labelformat=empty}
+
+\usepackage{tabularx}                   % package to adjust the table to the text width of tabularx
+\usepackage{ragged2e}                   % Getting better breaks in cells by ragged2e
+\usepackage{microtype}                  % Loading microtype for finer automatic justification
+\newcolumntype{Y}{>{\RaggedRight}X}             %ex: \begin{tabularx}{\textwidth}{P{2.5cm}lYYY}
+\newcolumntype{P}[1]{>{\RaggedRight}p{#1}}      %    \toprule ...   titi& toto ...  \midrule ...  \bottomrule
+\usepackage{colortbl} % pour les couleurs dans les tabular
+\usepackage{xfrac} %pour utiliser sfrac par ex.
+
+%\setlength{\parsep}{0pt}% Paragraph separation within a single item.
+%\setlength{\itemsep}{0pt}  % Extra inter-item spacing added to \parsep.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%        equations         %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareMathOperator{\tr}{tr} % operateur trace
+% \ReDeclareMathOperator{\div}{div} % operateur divergence
+\let\div\undefined
+\DeclareMathOperator{\div}{div} % operateur divergence
+\DeclareMathOperator{\perm}{perm} % operateur permutation
+
+\newcommand{\abs}[1]{\lvert{#1}\rvert}
+\newcommand{\vect}[1]{ \underline{#1} }
+\newcommand{\tens}[1]{ \underline {\underline{#1}} }
+\newcommand{\tensd}[1]{ \underline {\underline{#1}} }
+\newcommand{\tensq}[1]{ \tensd{\tensd{#1}} }
+\newcommand{\grad}[1]{\nabla{#1}}
+\newcommand{\Ra}{$\Rightarrow$}
+\newcommand{\cplx}[1]{ \boldsymbol{#1} }
+\renewcommand{\i}{\cplx{i}}
+\newcommand{\undemi}{\frac{1}{2}}
+\newcommand{\dt}{\Delta t}
+\newcommand{\e}{\epsilon}
+\newcommand{\drond}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\ddroi}[2]{\frac{d{#1}}{d{#2}}}
+
+\usepackage{empheq} % pour encadrer les equations --> non compatbile avec dirtree !!??!!
+\newcommand*\widefbox[1]{\fbox{\hspace{1em}#1\hspace{1em}}}
+%\newcommand*\myempheqbox[1]{%
+%  \colorbox{light-blue}{\hspace{1em}#1\hspace{1em}} }
+\newcommand*\myempheqbox[1]{%
+    \fboxrule2pt
+    \fcolorbox{bleujoli}{light-blue}{\hspace{1em}#1\hspace{1em}}%
+} %
+
+%a l'interieur d'un align, mieux vat utiliser \Aboxed{ ... & = ... }\\ ou \alignedbox{}{}
+\newlength\dlf
+\newcommand\alignedbox[2]{
+    % #1 = before alignment &
+    % #2 = after alignment &
+    &
+    \begingroup
+    \settowidth\dlf{$\displaystyle #1$}
+    \addtolength\dlf{\fboxsep+\fboxrule}
+    \hspace{-\dlf}
+    \fboxrule2pt
+%    \fcolorbox{bleujoli}{light-blue}{$\displaystyle #1 #2$}
+    %\fcolorbox{POUR}{roseclair}{$\displaystyle #1 #2$}
+    %\fcolorbox{vertjoli}{vertclair}{$\displaystyle #1 #2$}
+    %\fcolorbox{ORAN!30!red}{orangeclair!10}{$\displaystyle #1 #2$}
+    \fcolorbox{ORAN!60!red}{vertclair}{$\displaystyle #1 #2$}
+    %\fcolorbox{VIOL!80!red}{orangeclair!10}{$\displaystyle #1 #2$}
+    \endgroup
+}
+
+
+\usepackage{listings}          % Mise en forme de listings ou d'extraits de code
+% Define Gibiane Language  ----------------
+\lstdefinelanguage{gibiane}
+{
+    % list of keywords
+    %   morekeywords={
+    %     mot, mots, tabl, table, 
+    %     si, sino, sinon, fins, finsi,
+    %     lect, prog, *, **, /, +, -,
+    %     mode, mate, rigi, sigm, epsi, bsig, ksig,
+    %   },
+    morekeywords={  % d'abord tiré de pilot
+        opti, born, dens, droi, lapl, cerc, mota, 
+        quel, inte, para, et  , poin, plus, moin, tran,
+        rota, trac, inve, cote, elem, cont, diff, chan, list,
+        surf, conf, info, tour, homo, affi, syme, incl, elim,
+        titr, racc, tass, sort, lire, bary, dall, orie, manu,
+        oubl, comp, cout, pave, comm, noeu, mot , nbel, nbno,
+        noti, face, coor, norm, temp, volu, lect, sauf, prog,
+        +   , -   , *   , /   , **  , flot, enti, log , exp ,
+        depl, psca, pvec, pmix, liai, regl, hook, sols, reso,
+        date, rigi, bloq, depi, hota, stru, text, proj, venv,
+        elst, jonc, reco, mass, clst, sigm, rela, forc, mome,
+        vloc, base, dime, extr, vers, vibr, maxi, xtmx, ytmx,
+        >   , <   , >eg , <eg , ou  , ega , non , neg , mult,
+        pjba, crit, diag, xtx , uniq, bsig, deda, max1, mots,
+        ipol, abs , sin , cos ,
+        atg , enve, isov, detr, enle, remp, inse, coli, tria,
+        tabl, redu, symt, anti, resu, pres, exco, nomc, saut,
+        defo, appu, inva, prin, vmis, ksig, sign, suit, 
+        valp, ordo, tire, rege, dess, amor, char, coul, chpo,
+        afco, evol, orth, thet, comb, deve, vect, pica, capi, 
+        copi, dimn, sauv, rest, cara, mate, gene,
+        capa, elfe, jaco, plas, gree, mode, finp, xty ,
+        debp, ktan, form, mess, nnor, cubp, cubt, cer3, fdt ,
+        seis, ener, epsi, intg, cour, reac, supe, zero, depb,
+        exci, kp  , acti, elas, erre, cong, lump, obte,
+        vari, modi, masq, exis, mini, grad, ense, ifre, dfou,
+        sigs, mapp, somm, brui, rten, dspr, tfr , tote,
+        graf, tres, type, osci, spo , inde, chsp,
+        tagr, perm, cabl, fofi, work, qulx, debi, 
+        cmoy, comt, cond, flux, rimp, filt, tfri,
+        conc, iter, acqu, sour, conv, acoh, psmo, asih, ecou,
+        mena, synt, argu, atah, dyne, fonc, resp, plac,
+        vale, proi, exce, aret, calp, indi, act3, biot,
+        dedu, conn, nloc, chai, cosi, cvol, diad, hann, insi,
+        lsqf, ltl , pert, prns, psrs, siar, spon, visa, cneq,
+        ccon, mesu, pile, simp, util, menu, cosh, sinh, tanh,
+        deg3, aide, racp, refe, ksof, nske, kmab,
+        noel, doma, fpu , gmv , eqpr, eqex, vibc, avct,
+        kdia, kmtp, kmf , mdia, dfdt, tcrr, tcnm, sqtp, somt,
+        nlin, cmct, kcht, lapn, raft, klop, kres, cson, fimp, 
+        nuag, weip, khis, kops, fsur, flam, elno,
+        dbit, ns  , toim, fimp, kmbt, kbbt, dudw, frot, tsca,
+        konv, kcha, mhyb, matp, hdeb, hvit, hybp, smtp, divu,
+        mocu, chau, tail, erf , sens, impo, dans, impf, ntab,
+        fron, fuit, epth, fpt , kfpt, fpa , kfpa, echi, qond,
+        kpro, ffor, raye, rayn, vsur, traj, aju1, aju2, frig,
+        excf, nomm, prec, erfc, onde, cfl , dedo, dcov, parc,
+        pola, chi1, chi2, pent, pret, meth, xxt , cblo, genj,
+        zleg, mesm, fion, neut, logk, coac, resi, mutu, sore,
+        diri, lign, obje, debm, finm, heri, deco, exte, dmmu,
+        dmtd, bmtd, ssch, mrem, assi, fiss, prim, annu, prob,
+        sais, choi, deto, part, clmi, pmat, excp, prop, phaj,
+        alea, gnfl, mpro, sste, adve, bgmo, ecfe, coup, verm,
+        dfer, gyro, cori, kent, fant, itrc, reto, ijet, impe,
+        moca, levm, ravc, idli, raff, cfnd, adet, psip, acos,
+        asin, tan , trie, gane, hist, etg , oter, xfem, rfco,
+        vide, voro, prra, posi, mise, misl, coll, pod,  
+        option, borne, droit, droite, point, moins, titre, % puis extension
+    },
+    morekeywords=[2]{  % quelques procedures
+        postvibr, brasero, pasapas, explorer
+    },
+    morekeywords=[3]{  % operateurs speciaux
+        si, sino, sinon, fins, finsi,
+        repe, repeter, quit, fin
+    },
+    sensitive=false, % keywords are not case-sensitive
+    %  morecomment=[l]*, % l is for line comment
+    morecomment=[f]*, % f is for * on fisrt column + line comment
+    %  morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+    morestring=[b]", % defines that strings are enclosed in double quotes
+    morestring=[b]', % defines that strings are enclosed in simple quotes
+    %   moredelim=[is][\rmfamily\color{bleu}\itshape]{/*}{*/}
+    %   moredelim=[is][\normalfont\color{bleu}\itshape]{/*}{*/}
+    moredelim=[is][\sffamily\slshape\color{bleujoli}]{/*}{*/}
+}
+\lstset{
+    language={gibiane},
+    basicstyle=\scriptsize\ttfamily, % Global Code Style
+    %captionpos=b, % Position of the Caption (t for top, b for bottom)
+    extendedchars=true, % Allows 256 instead of 128 ASCII characters
+    tabsize=2, % number of spaces indented when discovering a tab 
+    columns=fixed, % make all characters equal width
+    keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+    showstringspaces=false, % lets spaces in strings appear as real spaces
+    %linewidth=450pt, 
+    breaklines=true, % wrap lines if they don't fit
+    %frame=tb, % draw a frame at the top, right, left and bottom of the listing
+    %frameround=tttt, % make the frame round at all four corners
+    %framesep=4pt, % quarter circle size of the round corners
+    backgroundcolor=\color{grisclair},
+    framexleftmargin=2mm, framexrightmargin=2mm,
+    framextopmargin=2mm,framexbottommargin=2mm,
+    frame=shadowbox, rulesepcolor=\color{gray},
+    xleftmargin=0mm,
+    %numbers=left, % show line numbers at the left
+    %numberstyle=\tiny\ttfamily, % style of the line numbers
+    commentstyle=\color{gris05},%\itshape,
+    keywordstyle=\color{blue}\bfseries,
+    keywordstyle=[2]\color{vert}\bfseries,
+    keywordstyle=[3]\color{dodge}\bfseries,
+    %   emph={brasero},  emphstyle=\color{vert}\bfseries,
+    emph={[2]vrai,faux},  emphstyle={[2]\color{violet}\bfseries},
+    stringstyle=\color{magenta}, % style of strings
+}
+\renewcommand{\lstlistingname}{\textsc{Jeu de données}}% Listing -> Jeu de donnée
+\renewcommand{\lstlistlistingname}{Liste des jeux de données}% List of Listings -> Liste des jeux de données
+\newenvironment{mylst}  % utile pour faire un listing sur plusieurs pages
+{\list{}{%
+        \leftmargin=0pt
+        \topsep=6pt
+        \listparindent=\parindent
+        \itemindent=\parindent
+    }\item\relax}
+{\endlist}
+% exemple : \begin{mylst} 
+%           \lstinputlisting[caption={Analyse toto},captionpos=b,label=dgibi_toto]
+%            {code/toto.dgibi}
+%           \end{mylst}
+
+
+%si cea \setlength{\leftmargini}{0pt}
+\setbeamercovered{dynamic}
+
+%\setlength{\abovedisplayskip}{0pt}
+%\setlength{\belowdisplayskip}{0pt}
+%\setlength{\abovedisplayshortskip}{0pt}
+%\setlength{\belowdisplayshortskip}{0pt}
+%\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}     % espace float-text
+%\setlength{\parskip}{0pt}   % Space between paragraphs outside of a list, and part of the space between a non-list paragraph and a list item.
+%\setlength{\itemsep}{0pt}  % Extra inter-item spacing added to \parsep.
+
+\addtobeamertemplate{block begin}{\setlength\abovedisplayskip{0pt}}
+
+%\setbeamertemplate{itemize/enumerate body begin}{\small}
+%\setbeamertemplate{itemize/enumerate subbody begin}{\footnotesize}
+
+
+% uncomment if you do want notes
+%\setbeameroption{show notes on second screen=right}
+
+% comment if you do not want grey item
+\setbeamercovered{transparent}
+
+% pour avoir :  Plan :  I. titre section 1
+%                      II. titre section 2 
+% comment if you do not want a summary at each section
+\AtBeginSection[]{
+    \begin{frame}{Plan}
+%        \small \tableofcontents[currentsection, hideothersubsections]
+        \small \tableofcontents[currentsection]
+    \end{frame} 
+}
+\defbeamertemplate{section in toc}{sections numbered roman}{%
+  \leavevmode%
+  \MakeUppercase{\romannumeral\inserttocsectionnumber}.\ %
+  \inserttocsection\par}
+\setbeamertemplate{section in toc}[sections numbered roman] 
+%\setbeamertemplate{subsection in toc}[subsections numbered]
+%\setbeamertemplate{subsubsection in toc}[subsubsections numbered]
+
+\addtobeamertemplate{footnote}{}{\vspace{1ex}} %pour eviter superposition footnote et blabla du bas
+\usepackage[symbol]{footmisc}
+\renewcommand{\thefootnote}{\fnsymbol{footnote}} %\footnote[num]{text}
+
+\hypersetup{pdfnewwindow=true} % pour ouvrir un nuoveau pdf si \href{run:toto.pdf}{\beamerbutton{blablabla}}) (ok pour acrobat mais pas pour okular)

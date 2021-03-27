@@ -1,0 +1,130 @@
+\documentclass[semt,nt]{docDM2S}
+
+
+\settitre{Mon titre}
+\setauteur{Benoit Prabel}
+\setauteurfonction{Bob l'éponge}{Stagiaire}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% OBLIGATOIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\setnumero{2016-XXX}
+\setverificateur{Verificateur 1 }{Fonction V}
+\setreferencesinterne{DOB}{Domaine}{Projet}{X-XXXX-YY-ZZ}
+\setresume{Mon résumé.}
+\setmotscles{Mot Clef 1, Mot Clef 2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% FACULTATIF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\setdiffusion{CD}       % a choisir parmi normale,restreinte,CEA,CD,SD
+\setdate{30/05/2016}
+
+\setreferencesaction{particuliers}{}{}
+% \setreferencesaction
+%     {\textcolor{green}{\footnotesize \textbackslash setreferencesaction\{1\}\{2\}\{3\}--AArg1--}} %partenaires/clients
+%     {\textcolor{green}{\footnotesize --AArg2-- Demander au chef de projet}} %accord
+%     {\textcolor{green}{\footnotesize --AArg3-- Demander au chef de projet}} %type d'action
+    
+\setjalon
+    {\textcolor{green}{{\footnotesize \textbackslash setjalon\{1\}\{2\}--JArg1--}}} %majeur, principal, vide{}
+    {\textcolor{green}{\footnotesize --JArg2--}} %intitulé du jalon
+    
+\setdelaiconfidentialite
+    {\textcolor{green}{{\footnotesize \textbackslash setdelaiconfidentialite\{DELAI\}}}}
+    
+\setcahierlaboratoire
+    {\textcolor{green}{{\footnotesize \textbackslash setcahierlaboratoire\{NUMERO\}}}}
+
+%%%%% SIGNATURES
+% \setapprobateur{Thomas Laporte}{Chef de Laboratoire}
+\setvisa
+    {\textcolor{green}{\textbackslash setvisa\{\}\{\}---Nom---}}{\textcolor{green}{---Fonction---}} %autre visa : nom + fonction
+\setemetteur{Albert EINSTEIN}{Chef de Service par interim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% DIFFUSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+\setnbexemplaire{12}
+\setdiffusioninterne{
+  \begin{tabular}[!H]{ll}
+    Benoit Prabel, Auteur	  & DEN/DANS/DM2S/SEMT/DYN \\
+    Philippe Piteau, Vérificateur & DEN/DANS/DM2S/SEMT/DYN
+  \end{tabular}
+}
+% \setdiffusionexterne{
+%   \begin{tabular}[!H]{ll}
+%     Toto Titi & AREVA/TA\\
+%   \end{tabular}
+% }
+
+% \setdiffusionresume{
+%   \begin{tabular}[!H]{ll}
+%     les chefs des deux autres services DEN/DANS/DM2S/Service/DIR\\
+%   \end{tabular}
+% }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Listes des Tables/Figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \nolistoffigures
+% \nolistoftables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{document}
+
+% \newpage
+% \include{Introduction}
+% on utilise un seul fichier ici mai il est possible (evidemment)
+% de decouper en plusieurs .tex (Introduction.tex par ex.)
+\section*{Introduction}
+
+ bla bla bla ...
+
+\section{Section 1 : Mécanique}
+
+\subsection{Subsection 1.1}
+
+L'équation de la dynamique est la suivante~:
+\begin{equation}
+  F^{int}(\sigma) + M \ddot{u} = F^{ext}
+\end{equation}
+
+\subsection{Subsection 1.2}
+
+L'équation de comportement élastique 1D est~:
+\begin{equation}
+  \sigma = E \epsilon
+\end{equation}
+
+
+\section{Section 2 : Electricité}
+
+\subsection{Subsection 2.1} 
+
+La puissance électrique est :
+\begin{equation}
+  P = U \cdot I
+\end{equation}
+
+\subsection{Subsection 2.2}
+
+La tension d'une 'résistance électrique vaut :
+\begin{equation}
+  U = R \cdot I
+\end{equation}
+
+
+%\include{Conclusion}
+\section*{Conclusion}
+
+Ce rapport présente des formules scientifiques de haut niveau.
+
+
+\end{document}
+

@@ -1,0 +1,181 @@
+\documentclass[emsi,nt]{docDM2S}
+\settitre{\textcolor{red}{Titre du document technique}}
+\setauteur{\textcolor{red}{Auteur 1}}
+\setauteur{\textcolor{red}{Auteur 2}}
+\setauteurfonction{\textcolor{red}{Auteur 3}}{\textcolor{red}{Fonction 3}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% OBLIGATOIRE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\setnumero{\textcolor{red}{UU-VVV}}
+ \setindiceA{\textcolor{red}{XX/XX/XXXX}}{\textcolor{red}{Document initial}}
+ % \setindiceB{XX/XX/XXXX}{Document révisé}
+\setverificateur{\textcolor{red}{Verificateur 1}}{\textcolor{red}{Fonction V1}}
+\setdiffusion{normale} %%%% normale | restreinte | CEA | CD | SD
+\setreferencesaction{\textcolor{red}{IRSN}}{\textcolor{red}{GGP CIC}}{\textcolor{red}{A}}
+\setreferencesinterne{\textcolor{red}{\`A compléter (EX : DISN)}}{\textcolor{red}{\`A compléter (ex GEN2 \& 3)}}{\textcolor{red}{Projet}}{\textcolor{red}{X-XXXX-YY-ZZ-UU-VZ}}
+\setjalon{\textcolor{red}{MAJEUR ? PRINCIPAL ? SINON NE RIEN METTRE}}{\textcolor{red}{Voir FA, FIP}}
+\setresume{\textcolor{red}{Si le document est rédigé en Anglais, le résumé doit être rédigé en Anglais et en Français.}}
+\setmotscles{\textcolor{red}{5 mots maximum}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% FACAULTATIF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% \setreferencesaction{\textcolor{green}{\footnotesize \textbackslash setreferencesaction\{1\}\{2\}\{3\}--Arg1--}}{\textcolor{green}{\footnotesize --Arg2-- Demander au chef de projet}}{\textcolor{green}{\footnotesize --Arg3-- Demander au chef de projet}}
+% \setjalon{\textcolor{green}{{\footnotesize \textbackslash setjalon\{1\}\{2\}--Arg1--}}}{\textcolor{green}{\footnotesize --Arg2--}}
+% \setdelaiconfidentialite{\textcolor{green}{{\footnotesize \textbackslash setdelaiconfidentialite\{DELAI\}}}}
+% \setcahierlaboratoire{\textcolor{green}{{\footnotesize \textbackslash setcahierlaboratoire\{NUMERO\}}}}
+% \setvisa{\textcolor{green}{\textbackslash setvisa\{\}\{\}---Arg~1---}}{\textcolor{green}{---Arg~2---}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% DIFFUSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+% \setdiffusioninterne{
+%   \begin{tabular}[!H]{ll}
+%     DEN/DANS/DM2S : & Tous agents : mise à disposition sur l'intranet \textbf{http://www-dm2si.cea.fr/Qualite/index.php?id=60}\\
+%   \end{tabular}
+% }
+% \setdiffusionexterne{
+%   \begin{tabular}[!H]{ll}
+%     Toto Titi & AREVA/TA\\
+%   \end{tabular}
+% }
+
+% \setdiffusionresume{
+%   \begin{tabular}[!H]{ll}
+%     les chefs des deux autres services DEN/DANS/DM2S/Service/DIR\\
+%   \end{tabular}
+% }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Listes des Tables/Figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% \nolistoffigures
+% \nolistoftables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Commandes U
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\usepackage{xspace}                    %% laisse un espace adequate pour raccourci
+\usepackage{layout}
+\usepackage{epstopdf}
+\usepackage{amsmath}%
+\usepackage{amsfonts}%
+\usepackage{amssymb}%
+\usepackage{graphicx}
+%\usepackage[latin2]{inputenc}
+%\usepackage{ulem}
+%\usepackage[utf8]{inputenc}
+%\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+%\usepackage{cancel}
+\usepackage{float}
+%\usepackage{here}
+\usepackage{mathrsfs,makeidx}
+\usepackage{titlesec}
+% \usepackage[french]{minitoc}
+\usepackage{caption}
+%\usepackage{subcaption}
+%\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multirow}
+%\usepackage{bold-extra}
+\usepackage{subfig}
+\usepackage{placeins}
+
+
+%\newtheorem{theorem}{Theorem}
+%\newtheorem{acknowledgement}[theorem]{Acknowledgement}
+%\newtheorem{algorithm}[theorem]{Algorithm}
+%\newtheorem{axiom}[theorem]{Axiom}
+%\newtheorem{case}[theorem]{Case}
+%\newtheorem{claim}[theorem]{Claim}
+%\newtheorem{conclusion}[theorem]{Conclusion}
+%\newtheorem{condition}[theorem]{Condition}
+%\newtheorem{conjecture}[theorem]{Conjecture}
+%\newtheorem{corollary}[theorem]{Corollary}
+%\newtheorem{criterion}[theorem]{Criterion}
+%\newtheorem{definition}[theorem]{Definition}
+%\newtheorem{example}[theorem]{Example}
+%\newtheorem{exercise}[theorem]{Exercise}
+%\newtheorem{lemma}[theorem]{Lemma}
+%\newtheorem{notation}[theorem]{Notation}
+%\newtheorem{problem}[theorem]{Problem}
+%\newtheorem{proposition}[theorem]{Proposition}
+%\newtheorem{remark}[theorem]{Remark}
+%\newtheorem{solution}[theorem]{Solution}
+%\newtheorem{summary}[theorem]{Summary}
+%\newenvironment{proof}[1][Proof]{\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
+%\newenvironment{remarque}{\addtocounter{rmq}{1}\textbf{N.B. :}}{}
+%\newcounter{rmq}[section]
+%\renewcommand{\thesection}{\arabic{section}}
+
+% Où trouver les figures
+%\graphicspath{{figures/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%% Document
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\begin{document}
+
+% \newpage
+% \include{Introduction}
+% on utilise un seul fichier ici mai il est possible (evidemment)
+% de decouper en plusieurs .tex (Introduction.tex par ex.)
+\section*{Introduction}
+
+ bla bla bla ...
+
+\section{Section 1 : Mécanique}
+
+\subsection{Subsection 1.1}
+
+L'équation de la dynamique est la suivante~:
+\begin{equation}
+  F^{int}(\sigma) + M \ddot{u} = F^{ext}
+\end{equation}
+
+\subsection{Subsection 1.2}
+
+L'équation de comportement élastique 1D est~:
+\begin{equation}
+  \sigma = E \epsilon
+\end{equation}
+
+
+\section{Section 2 : Electricité}
+
+\subsection{Subsection 2.1} 
+
+La puissance électrique est :
+\begin{equation}
+  P = U \cdot I
+\end{equation}
+
+\subsection{Subsection 2.2}
+
+La tension d'une 'résistance électrique vaut :
+\begin{equation}
+  U = R \cdot I
+\end{equation}
+
+
+%\include{Conclusion}
+\section*{Conclusion}
+
+Ce rapport présente des formules scientifiques de haut niveau.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% %\bibliographystyle{plain}
+% %\bibliographystyle{apalike-fr}
+% \bibliographystyle{abbrv}
+% \bibliography{References}
+
+\end{document}
+

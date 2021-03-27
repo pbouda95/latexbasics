@@ -1,0 +1,2052 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% $Id: docDM2S.cls,v 1.4 2013/02/15 14:59:40 gaudier Exp $
+%% $Author: gaudier $
+%% $Date: 2013/02/15 14:59:40 $
+%% $Revision: 1.4 $
+%% $Name:  $
+%% $State: Exp $
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fichier  : docDM2S.cls
+%% Auteur   : Philippe Fillion
+%% Auteur   : Fabrice Gaudier 
+%% Création : 20/02/2003
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Version
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 30/05/2016 (BP) : adaptation de Alberto pour pouvoir compiler avec latex (et pas que pdflatex)
+%%                   + on remet a jour avec nouvelle evolution modele de document (notamment timbre confidentiel)!
+%% 17/06/2014 (BP) : finalement, on enleve les ref en entete de page 1 si confidentiel
+%% 13/06/2014 (CF) : la partie qui gère dm@s@haveaction est déplacée avant def page 1 
+%                      + correction gestion de SO dans dm@s@haveaction
+%                      + correction pied de page dans le cas où dm@s@haveactiontrue
+%% 12/06/2014 (BP) : meilleure prise en compte des tampons si confidentiel
+%% 06/06/2104 (Cyril Feau) : logo AQ page 1 + tous les tableaux pages 2 et 3 pour être plus proche du word + maj cdl SEMT
+%% 20/06/2013 (BP) : ajout de dm@s@haveaction, CdDA, \settitrecourt, \showauteur, \setcodebarre
+%%                 + quelques modifs sur l'apparence et les infos de la 1ere page 
+%%                 + réglage du tampons rouge des entetes
+%%                 + ... autres pour etre + proche du modele word
+%% 12/02/2013 : Police par défaut Helvetica/Arial
+%% 15/01/2013 v3.0 : Application des nouvelles procedures DEN + Audit DEN juillet 2012 + Ajout notion Note Technique (NT)
+%% 05/12/2011 : remplacement du SFME par STMF
+%% 15/06/2010 v2.0 Mise à jour de la nouvelle maquette
+%%                   - 2 vérificateurs possibles (Li Leimoa)
+%%                   - option "english" ajouté
+%%                   - +++
+%% 09/09/2005 v1.2 Mise à jour avec entre autre,
+%%                        - style de compilation article(défaut)|report|book,
+%%                        - inclusion de DANS,
+%%                        - passage à 8 auteurs maxi
+%%                        - style PU (Publication) presque opérationnel ( a part la dernière page)
+%% 20/02/2003 v1.1 Création de la class docDM2S.cls
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Identification
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\fileversion{3.0}
+\def\filedate{2014/06/12}
+\def\docdate {2014/06/12}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{docDM2S}[\filedate\space v\fileversion\space Document DM2S catégorie B]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% Mode de compilation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@sPDF
+\ifx\pdfoutput\undefined
+  \dm@sPDFfalse                        %% mode : LaTeX
+\else
+  \ifnum \pdfoutput=0                     %% mode : LaTeX
+    \dm@sPDFfalse
+  \else
+    \pdfoutput=1                     %% mode : PDFLaTeX
+    \dm@sPDFtrue
+  \fi
+\fi 
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%% Variables Globales
+%%%%%%%%%%%%%%%%%%%%%%%%
+\newcount\dm@s@ScoreAQ
+\dm@s@ScoreAQ = \z@
+\newcount\dm@s@MaxScoreAQ
+\dm@s@MaxScoreAQ  = 8
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Relecteur/Verificateur
+%%%%%%%%%%%%%%%%%%%%%%
+\newcount\dm@s@numberVerificateur
+\dm@s@numberVerificateur = \z@
+
+\def\dm@s@SetVerificateur@#1#2{%
+  \ifcase\dm@s@numberVerificateur\or
+  \def\dm@s@verificateurAName{#1} \def\dm@s@verificateurAFunction{#2} \def\dm@s@verificateurALabotory{\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/\dm@s@abrLaboratoire} \or
+  \def\dm@s@verificateurAName{#1} \def\dm@s@verificateurAFunction{#2} \def\dm@s@verificateurALabotory{\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/\dm@s@abrLaboratoire} \or
+  \def\dm@s@verificateurBName{#1} \def\dm@s@verificateurBFunction{#2} \def\dm@s@verificateurBLabotory{\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/\dm@s@abrLaboratoire} \fi
+}
+
+
+\def\dm@s@AddVerificateur#1#2{%
+  \ifnum\dm@s@numberVerificateur = 0
+    \global\advance\dm@s@ScoreAQ\@ne
+  \fi
+  \ifnum\dm@s@numberVerificateur < 3 %
+    \global\advance\dm@s@numberVerificateur\@ne
+    \dm@s@SetVerificateur@{#1}{#2}
+  \else
+    \PackageError{Classe docDM2S}{ 2 'Verificateur' maximum}%
+  \fi
+}
+
+%% API Utilisateur
+
+ \def\setverificateur#1#2{%
+   \dm@s@AddVerificateur{#1}{#2}}
+ \def\addverificateur#1#2{%
+   \dm@s@AddVerificateur{#1}{#2}}
+ 
+ \def\setrelecteur#1{%
+   \setverificateur{#1}{}}
+
+%%%%%%%%%%%%%%%%%%%%%% 
+%% Approbateur
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setapprobateur#1#2{%
+  \global\advance\dm@s@ScoreAQ\@ne
+  \def\dm@s@approbateurName{#1}
+  \def\dm@s@approbateurFunction{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Autre Visa
+%%%%%%%%%%%%%%%%%%%%%%
+\newcount\dm@s@NbVisa
+\dm@s@NbVisa = \z@
+
+\def\setvisa#1#2{%
+  \ifnum\dm@s@NbVisa < 2 %
+    \global\advance\dm@s@NbVisa\@ne
+    \def\dm@s@visaName{#1}
+    \def\dm@s@visaFunction{#2}
+  \else
+    \PackageError{Classe docDM2S}{ 1 'Autre Visa' maximum}%
+  \fi}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Emetteur
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setemetteur#1#2{%
+  \global\advance\dm@s@ScoreAQ\@ne
+  \def\dm@s@emetteurName{#1}
+  \def\dm@s@emetteurFunction{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Options par defaut du document %%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sommaire (tableofcontents)
+\newif\ifdm@s@haveSommaire
+\dm@s@haveSommairetrue
+%% List of figures
+\newif\ifdm@s@haveListOfFigures
+\dm@s@haveListOfFigurestrue
+%% List of tables
+\newif\ifdm@s@haveListOfTables
+\dm@s@haveListOfTablestrue
+%% Timbre (Restreinte, Confidentiel
+\newif\ifdm@s@haveTimbre
+\dm@s@haveTimbretrue
+%% le document est-il date 
+\newif\ifdm@s@haveNotDated
+\dm@s@haveNotDatedtrue
+%% Diffusion externe au DM2S
+\newif\ifdm@s@haveReferenceExterne
+\dm@s@haveReferenceExternefalse
+%% Contient un resume
+\newif\ifdm@s@haveResume
+\dm@s@haveResumefalse
+%% Contient un numero chrono
+\newif\ifdm@s@haveNumeroChrono
+\dm@s@haveNumeroChronofalse
+\def\dm@s@defaultNumeroChrono{XX-YYY}
+%% Contient un resume DO 
+\newif\ifdm@s@haveResumeDO
+\dm@s@haveResumeDOfalse
+%% Contient un resume anglais
+\newif\ifdm@s@haveResumeAnglais
+\dm@s@haveResumeAnglaisfalse
+%% Niveau de Diffusion : Normale (default : true)
+\newif\ifdm@s@DiffusionNormale
+\dm@s@DiffusionNormaletrue
+%% Niveau de Diffusion : Restreinte (default : false) 
+\newif\ifdm@s@DiffusionRestreinte
+\dm@s@DiffusionRestreintefalse
+%% Niveau de Diffusion : CCEA (default : false) 
+\newif\ifdm@s@DiffusionCCEA
+\dm@s@DiffusionCCEAfalse
+%% Niveau de Diffusion : CD (default : false) 
+\newif\ifdm@s@DiffusionCD
+\dm@s@DiffusionCDfalse
+%% Niveau de Diffusion : SD (default : false) 
+\newif\ifdm@s@DiffusionSD
+\dm@s@DiffusionSDfalse
+%% nouveau logique de diffusion = vrai si Normale ou Restreinte, faux si confidentialité supérieure
+\newif\ifdm@s@DiffusionNouR
+\dm@s@DiffusionNouRtrue
+% longueur de la page si pas de tampon en bas
+% \setlength{\textheight}{230mm}
+%% Contient les références de l'action (Partenaire/Accord/type)
+\newif\ifdm@s@havereferenceaction
+\dm@s@havereferenceactionfalse
+%bp : le nomde l accord existe t'il ?
+\newif\ifdm@s@haveaction
+\dm@s@haveactionfalse
+%% Contient les informations  jalon
+\newif\ifdm@s@haveJalon
+\dm@s@haveJalonfalse
+%% Contient le delai contractuel de Confidentialité
+\newif\ifdm@s@haveDelaiConfidentialite
+\dm@s@haveDelaiConfidentialitefalse
+
+%% Contient un numero de Cahier de Laboratoire
+\newif\ifdm@s@haveCahierLaboratoire
+\dm@s@haveCahierLaboratoirefalse
+
+%% Bas de page personnalise 
+\newif\ifdm@s@havebasdepage
+\dm@s@havebasdepagefalse
+
+%%
+%% OLD
+%%
+\newif\ifdm@s@havenumeropublication
+\dm@s@havenumeropublicationfalse
+\newif\ifdm@s@h@veind@ce
+\dm@s@h@veind@cefalse
+\newif\ifdm@s@haveMotsClefs
+\dm@s@haveMotsClefsfalse
+\newif\ifdm@s@havedob
+\dm@s@havedobfalse
+\newif\ifdm@s@haveprojet
+\dm@s@haveprojetfalse
+\newif\ifdm@s@haveeotp
+\dm@s@haveeotpfalse
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Direction               %%
+%%   nom complet           %%
+%%   initiales             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@setDirection#1#2{%
+  \def\dm@s@direction{#1}
+  \def\dm@s@abrDirection{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Sous-Direction          %%
+%%   nom complet           %%
+%%   initiales             %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\dm@s@setSousDirection#1#2{%
+  \def\dm@s@sousdirection{#1}
+  \def\dm@s@abrSousDirection{#2}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Département             %%
+%%   nom complet           %%
+%%   initiales             %%
+%%   CdD                   %%
+%%   CdDA                  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@setDepartment#1#2#3#4{%
+  \def\dm@s@departement{#1}
+  \def\dm@s@abrDepartement{#2}
+  \def\dm@s@CdD{#3}
+  \def\dm@s@CdDA{#4}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%  Service                %%
+%%   nom complet           %%
+%%   initiales             %%
+%%   CdS                   %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@setService#1#2#3{%
+  \def\dm@s@service{#1}
+  \def\dm@s@abrService{#2}
+  \def\dm@s@CdS{#3}
+  \setemetteur{#3}{Chef de Service}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Laboratoire             %%
+%%   nom complet           %%
+%%   initiales             %%
+%%   CdL                   %%
+%%   Centre, Batiment, PC  %%
+%%   Tel, Fax, Mail        %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@setlaboratoire#1#2#3#4#5#6#7#8#9{%
+  \def\dm@s@laboratoire{#1}
+  \def\dm@s@abrLaboratoire{#2}
+  \setapprobateur{#3}{Chef de Laboratoire}
+  \def\dm@s@laboratoireCentre{#4}
+  \def\dm@s@laboratoireBatiment{#5}
+  \def\dm@s@laboratoirePC{#6}
+  \def\dm@s@laboratoireTel{#7}
+  \def\dm@s@laboratoireFax{#8}
+  \def\dm@s@laboratoireMail{#9}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% NOMS DES INFORMATIONS
+%%   A maintenir par l'ingénieur Qualité du département
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@isdmssdir
+\dm@s@isdmssdirfalse
+
+\dm@s@setDirection{Direction de l'Energie Nucléaire}{DEN}
+% \dm@s@setSousDirection{Direction déléguée aux Activités Nucléaires de Saclay}{DANS}
+\dm@s@setSousDirection{Direction des Activités Nucléaires de Saclay}{DANS}
+\dm@s@setDepartment{Département de Modélisation des Systèmes et Structures}{DM2S}{Christian CAVATA}{Anne NICOLAS}
+
+\def\@stmf{\dm@s@setService{Service de Thermohydraulique et de Mécanique des Fluides}{STMF}{Danielle GALLO}}
+\def\@serma{\dm@s@setService{Service d'études des Réacteurs et de Modélisation Avancée}{SERMA}{Patrick BLANC-TRANCHANT}}
+\def\@semt{\dm@s@setService{Service d'Etudes Mécaniques et Thermiques}{SEMT}{Valérie VANDENBERGHE}}
+
+%%%%%%%%%%%%%%%
+%%   DM2S
+%%%%%%%%%%%%%%%
+\DeclareOption{dm2s}{
+  \dm@s@setlaboratoire{}{DIR}{\dm@s@CdD}{Saclay}{454}{48}{64 92}{66 42}{murielle.maruejouls}
+  \dm@s@setService{}{DM2S}{\dm@s@CdD}
+  \dm@s@isdmssdirtrue
+  \setapprobateur{\dm@s@CdD}{Chef de Département}
+  \setemetteur{\dm@s@CdD}{Chef de Département}
+}
+
+%%%%%%%%%%%%%%%
+%%   STMF
+%%%%%%%%%%%%%%%
+
+\DeclareOption{stmf}{
+  \@stmf
+  \dm@s@setlaboratoire{}{DIR}{\dm@s@CdS}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \setapprobateur{\dm@s@CdS}{Chef de Service}
+  \setemetteur{\dm@s@CdS}{Chef de Service}
+}
+\DeclareOption{latf}{
+  \dm@s@setlaboratoire{LABORATOIRE DES APPLICATIONS EN THERMOHYDRAULIQUE ET MECANIQUE DES FLUIDES}{LATF}{Danielle Gallo}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \@stmf
+}
+\DeclareOption{lmec}{
+  \dm@s@setlaboratoire{LABORATOIRE DE MODELISATION ET SIMULATION A L'ECHELLE COMPOSANT}{LMEC}{Didier Jamet}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \@stmf
+}
+\DeclareOption{lgls}{
+  \dm@s@setlaboratoire{LABORATOIRE DE GÉNIE LOGICIEL ET DE SIMULATION}{LGLS}{Vincent Bergeaud}{Saclay}{454}{47}{91 91}{96 96}{evelyne.macanda}
+  \@stmf
+}
+\DeclareOption{lieft}{
+  \dm@s@setlaboratoire{LABORATOIRE D'INSTRUMENTATION ET EXPERIMENTATION EN MECNIQUE DES FLUIDES ET THERMOHYDRAULIQUE}{LIEFT}{Isabelle Tkatschenko}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \@stmf
+}
+\DeclareOption{lmes}{
+  \dm@s@setlaboratoire{LABORATOIRE DE MODELISATION ET SIMULATION A L'ECHELLE SYSTEME}{LMES}{Philippe Emonot}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \@stmf
+}
+\DeclareOption{lmsf}{
+  \dm@s@setlaboratoire{LABORATOIRE DE MODELISATION ET SIMULATION EN MECANIQUE DES FLUIDES}{LMSF}{Olivier Antoni}{Saclay}{454}{47}{91 10}{96 96}{evelyne.macanda}
+  \@stmf
+}
+
+
+
+  %%%%%%%%%%%%%%%
+  %%   SEMT
+  %%%%%%%%%%%%%%%
+
+\DeclareOption{semt}{
+  \@semt
+  \dm@s@setlaboratoire{}{DIR}{\dm@s@CdS}{Saclay}{607}{117}{45 80}{69 05}{sylvie.langlois}
+  \setapprobateur{\dm@s@CdS}{Chef de Service}
+  \setemetteur{\dm@s@CdS}{Chef de Service}
+}
+
+\DeclareOption{bccr}{
+  \dm@s@setlaboratoire{BUREAU DE CONCEPTION, CALCULS ET RÉALISATION}{BCCR}{Gilles RAMPAL}{Saclay}{527}{91}{45 80}{69 05}{sylvie.langlois}
+  \@semt
+}
+
+\DeclareOption{dyn}{
+  \dm@s@setlaboratoire{LABORATOIRE D'\'ETUDE DE DYNAMIQUE}{DYN}{Thomas LAPORTE}{Saclay}{607}{115}{23 60}{87 80}{claire.outrequin}
+  \@semt
+}
+
+\DeclareOption{emsi}{
+  \dm@s@setlaboratoire{LABORATOIRE D'\'ETUDE DE MÉCANIQUE SYSMIQUE}{EMSI}{Evelyne FOERSTER}{Saclay}{603}{112}{39 46}{83 31}{sylvie.prugnaud}
+  \@semt
+}
+
+
+\DeclareOption{lisn}{
+  \dm@s@setlaboratoire{LABORATOIRE D'INTÉGRITE DES STRUCTURES ET DE NORMALISATION}{LISN}{Yann KAYSER}{Saclay}{607}{116}{23 60}{87 84}{claire.outrequin}
+  \@semt
+}
+
+\DeclareOption{lm2s}{
+  \dm@s@setlaboratoire{LABORATOIRE DE MÉCANIQUE SYSTÈME ET SIMULATION}{LM2S}{Serge PASCAL}{Saclay}{607}{115}{54 65}{86 84}{martine.morice}
+  \@semt
+}
+
+\DeclareOption{lta}{
+  \dm@s@setlaboratoire{LABORATOIRE DES TECHNOLOGIES D'ASSEMBLAGE}{LTA}{Antonella LI PUMA}{Saclay}{611}{121}{39 46}{90 23}{sylvie.prugnaud}
+  \@semt
+}
+
+
+  %%%%%%%%%%%%%%%
+  %%   SERMA
+  %%%%%%%%%%%%%%%
+\DeclareOption{serma}{
+  \@serma
+  \dm@s@setlaboratoire{}{DIR}{\dm@s@CdS}{Saclay}{470}{57}{28 43}{23 81}{michele.quere}
+  \setapprobateur{\dm@s@CdS}{Chef de Service}
+  \setemetteur{\dm@s@CdS}{Chef de Service}
+}
+
+
+\DeclareOption{ltsd}{
+  \dm@s@setlaboratoire{Laboratoire de Transports Stochastique et Déterministe}{LTSD}{Sylvie Naury}{Saclay}{470}{210}{39 79}{84 90}{violette.leduc}
+  \@serma
+}
+
+\DeclareOption{lpec}{
+  \dm@s@setlaboratoire{Laboratoire de Protection, d'Etudes et de Conception}{LPEC}{Christine Poinot-Salanon}{Saclay}{470}{57}{39 61}{99 35}{jocelyne.corona}
+  \@serma
+}
+
+\DeclareOption{llpr}{
+  \dm@s@setlaboratoire{Laboratoire de Logiciels pour la Physique des Réacteurs}{LLPR}{Christophe Calvin}{Saclay}{470}{57}{39 61}{45 72}{jocelyne.corona}
+  \@serma
+}
+
+
+\DeclareOption{cp2c}{
+  \dm@s@setlaboratoire{CELLULE PÔLE DE COMPÉTENCE CRITICITÉ}{CP2C}{Emmanuel Gagnier}{Saclay}{470}{57}{28 43}{23 81}{michele.quere}
+  \@serma
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End Of NOMS DES INFORMATIONS                         %%
+%%   A maintenir par l'ingénieur Qualité du département %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Nature du document          %%
+%% (fournie en option de la commande \documentclass[...]{docDM2S}) %%
+%%  rt : Rapport Technique     %%
+%%  st : Spéfication technique %%
+%%  nt : Note technique        %%
+%%  pu : Publication           %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@setTypeDocument#1#2{%
+  \def\dm@s@typeDocument{#1}%
+  \def\dm@s@abrTypeDocument{#2}}
+
+\newif\ifdm@s@isNote
+\dm@s@isNotefalse
+\newif\ifdm@s@isRapport
+\dm@s@isRapportfalse
+\newif\ifdm@s@isSpecification
+\dm@s@isSpecificationfalse
+\newif\ifdm@s@isPublication
+\dm@s@isPublicationfalse
+
+\DeclareOption{nt}{
+  \dm@s@setTypeDocument{Note Technique}{NT}
+  \dm@s@isNotetrue}
+
+\DeclareOption{rt}{
+  \dm@s@setTypeDocument{Rapport Technique}{RT}
+  \dm@s@isRapporttrue}
+
+\DeclareOption{st}{
+  \dm@s@setTypeDocument{Spécification}{ST}
+  \dm@s@isSpecificationtrue}
+
+\DeclareOption{pu}{
+  \dm@s@setTypeDocument{PUBLICATION}{PU}
+  \dm@s@isPublicationtrue}
+
+  
+%%%%%%%%%%%%%%%%%%%%%%
+%% Niveau de diffusion
+%%%%%%%%%%%%%%%%%%%%%%
+
+\def\dm@s@putDingDiffusion#1{#1 \hspace{15mm} {\large{\ding{56}}} \hspace{15mm}\fi}
+
+\def\setdiffusion#1{
+  \ifthenelse{\equal{#1}{normale}}{\dm@s@DiffusionNormaletrue}{\dm@s@DiffusionNormalefalse}
+  \ifthenelse{\equal{#1}{restreinte}}{\dm@s@DiffusionRestreintetrue}{\dm@s@DiffusionRestreintefalse}
+  \ifthenelse{\equal{#1}{CEA}}{\dm@s@DiffusionCCEAtrue 
+    \dm@s@DiffusionNouRfalse
+    \setlength{\textheight}{220mm}
+    %%\def\dm@s@abrTypeDocument{CCEA}
+    \def\dm@sdiffusion{CCEA}
+    }{\dm@s@DiffusionCCEAfalse}
+  \ifthenelse{\equal{#1}{CD}}{\dm@s@DiffusionCDtrue 
+    \dm@s@DiffusionNouRfalse
+    \setlength{\textheight}{220mm}
+    %%\def\dm@s@abrTypeDocument{CD}
+    \def\dm@sdiffusion{CD}
+    }{\dm@s@DiffusionCDfalse}
+  \ifthenelse{\equal{#1}{SD}}{\dm@s@DiffusionSDtrue
+    \dm@s@DiffusionNouRfalse
+    \setlength{\textheight}{220mm}
+    %%\def\dm@s@abrTypeDocument{SD}
+    \def\dm@sdiffusion{SD}
+    }{\dm@s@DiffusionSDfalse}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% mode de compilation            %%
+%%   article ( valeur par défaut) %%
+%%   report                       %%
+%%   book                         %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@isArticle
+\dm@s@isArticletrue
+\newif\ifdm@s@isReport
+\dm@s@isReportfalse
+\newif\ifdm@s@isBook
+\dm@s@isBookfalse
+
+\DeclareOption{article}{
+  \dm@s@isArticletrue}
+
+\DeclareOption{report}{
+  \dm@s@isReporttrue
+  \dm@s@isArticlefalse}
+
+\DeclareOption{book}{
+  \dm@s@isBooktrue
+  \dm@s@isArticlefalse}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Etat "Projet" du doc    %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@isDraft
+\dm@s@isDraftfalse
+
+\ifdm@sPDF
+  \PassOptionsToPackage{pdftex}{graphicx}
+\else
+  \PassOptionsToPackage{dvips}{graphicx}
+\fi
+
+\DeclareOption{projet}{
+  \dm@s@isDrafttrue}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Gestion des options graphiques %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% option draft : passe l'option draft à graphicx 
+%%  - les graphiques sont remplacés par des rectangles
+%%      avec le nom du fichier
+\DeclareOption{draft}{%
+  \setlength{\overfullrule}{5mm}
+  \ifdm@sPDF
+    \PassOptionsToPackage{draft}{graphicx}
+  \else
+    \PassOptionsToPackage{draft}{graphicx}
+  \fi}
+
+%% option final : passe l'option final à graphicx 
+\DeclareOption{final}{%
+  \ifdm@sPDF
+    \PassOptionsToPackage{final}{graphicx}
+  \else
+    \PassOptionsToPackage{final}{graphicx}
+  \fi}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% langue English          %%
+%%     (french par defaut) %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@isEnglish
+\dm@s@isEnglishfalse
+
+\DeclareOption{english}{
+  \dm@s@isEnglishtrue}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options inactive     %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% \PackageWarning{12pt}{Option '\CurrentOption' inconnue}
+%% \DeclareOption{12pt}{\OptionNotUsed}
+%% \PackageWarning{docDM2S}{'\CurrentOption' inactive. Les cadres sont faits pour du 11pt}}
+
+\ProcessOptions\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options par défaut        %%
+%%   11pt, a4paper, twoside  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ifdm@s@isArticle
+%   \LoadClass[11pt,a4paper,twoside]{article}
+  \LoadClass[11pt,a4paper]{article}
+\fi
+\ifdm@s@isReport
+%   \LoadClass[11pt,a4paper,twoside]{report}
+  \LoadClass[11pt,a4paper]{report}
+\fi
+\ifdm@s@isBook
+%   \LoadClass[11pt,a4paper,twoside]{book}
+  \LoadClass[11pt,a4paper]{book}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Déclarations préliminaires %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifdm@s@isEnglish
+\RequirePackage[english]{babel}        %% met les différentes étiquettes  en anglais
+\else
+\RequirePackage[french]{babel}        %% met les différentes étiquettes  en français 
+\fi
+
+\RequirePackage[ansinew]{inputenc}    %%- [latin1]
+\RequirePackage[T1]{fontenc}          %%
+\RequirePackage{titlesec}             %% pour utiliser \titleformat par ex
+\RequirePackage{graphicx}
+\RequirePackage{pifont}             %% caractère spécial pour préciser le mode de diffusion
+\RequirePackage{color}
+\RequirePackage{xcolor}
+\RequirePackage{calc}
+\RequirePackage{array}
+% \usepackage[french]{minitoc} % si besoin il faut le placer avant lastpage (sinon, conflit et une page blanche est ajoute a la fin du document)
+\RequirePackage{lastpage}           %% le nombre total de page
+\RequirePackage{fancyhdr}
+\RequirePackage{mathptmx}                   %% | affecte maths
+\RequirePackage[scaled=.9]{helvet}          %% | affecte ss  these three packages replace pslatex
+\RequirePackage{courier}                    %% | affecte tt 
+\renewcommand*\familydefault{\sfdefault}    %% on utilise la famille de police sans serif (sf) par defaut
+\RequirePackage{ifthen}
+\RequirePackage{colortbl}
+\RequirePackage{tabularx}
+\RequirePackage{ragged2e} 
+
+\renewcommand\tabularxcolumn[1]{>{\centering} m{#1}}
+%\def\tabularxcolumn#1{m{#1}} % defines the X column to use m (\parbox[c]) instead of p (`parbox[t]`)
+
+%% Pour la gestion des liens hypertext dans pdf
+\ifdm@sPDF
+  \RequirePackage[pdftex,breaklinks=true,colorlinks=true,linkcolor=black,citecolor=blue,urlcolor=blue]{hyperref}
+\fi
+
+\AtEndOfClass{\InputIfFileExists{docDM2S.cfg}{\typeout{classe docDM2S : utilise fichier de configuration locale}}{}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%                               % 
+% Begin of Document Compilation %
+%                               % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\AtBeginDocument{
+  %% ============================
+  %% Changer le nom  et centrer : 
+  %%    Tables des matières -> Sommaire
+  %%    Tables des figures  -> Liste des figures
+  %%    Liste des Tableaux  -> Liste des Tableaux
+  %% ============================
+%   \renewcommand\contentsname{\centerline{\textbf{\textsc{Sommaire}}}}
+  \renewcommand\contentsname{\hfill{\textbf{\textsc{Sommaire}}}\hfill} %bp : on diminue eventuellement l'espace entre le titre et la table of content
+  \renewcommand\listfigurename{\centerline{Liste des Figures}}
+  \renewcommand\listtablename{\centerline{Liste des Tableaux}}
+  \renewcommand\tablename{Tableau} %bp : pour etre coherent
+  
+  %% ============================
+  %% Si pas de valeur 'Indice' alors on met l'indice A
+  %% ============================
+  \ifnum\dm@s@lastIndice = 0
+    \setindiceA{\dm@s@dateCompilation}{\dm@s@defaultNatureIndiceA}
+  \fi
+  %% ============================
+  %% Si pas de valeur 'date' alors on met la valeur par defaut
+  %% ============================
+  \ifdm@s@haveNotDated
+    \setdate{\dm@s@dateIndice}
+  \fi
+  %% ============================
+  %% paramètres graphiques PS/PDF
+  %% ============================
+  \ifdm@sPDF
+    \DeclareGraphicsExtensions{.png,.jpg,.pdf}
+  \else
+    \DeclareGraphicsExtensions{.eps,.ps}
+  \fi
+  %% ============================
+  %% Entête
+  %% ============================
+  \dm@s@aqmisenpagecategorieB
+  \dm@s@clearEmptyDoublePage
+  %% ============================
+  %% Cas d'une publication
+  %% ============================
+  \ifdm@s@isPublication
+  \else
+    %% ============================
+    %% Table des matières
+    %% ============================
+    \ifdm@s@haveSommaire
+      \tableofcontents
+    \fi
+%%    \dm@s@clearEmptyDoublePage
+
+    %% ============================
+    %% Liste des tableaux
+    %% ============================
+    \ifdm@s@haveListOfTables
+      \ifdm@sPDF
+        \newpage %bp
+     \fi 
+      \listoftables
+%%      \dm@s@clearEmptyDoublePage
+    \fi
+
+    %% ============================
+    %% Table des figures
+    %% ============================
+    \ifdm@s@haveListOfFigures
+      \ifdm@sPDF
+        \newpage %bp
+     \fi 
+      \listoffigures
+%%      \dm@s@clearEmptyDoublePage
+    \fi
+    \dm@s@clearEmptyDoublePage
+  \fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               %
+%  End of Document Compilation  %
+%                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+%   \AtEndDocument{
+%     %%%%%%%%%%%%%%%%%%%%%% 
+%     %% Score AQ
+%     %%%%%%%%%%%%%%%%%%%%%% 
+%     \PackageWarning{Classe docDM2S}{Score AQ \the\dm@s@ScoreAQ/\the\dm@s@MaxScoreAQ}
+%   }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               %
+%            Options            %
+%                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Redéfinition de la mise en page
+%%
+%%
+  \setlength{\oddsidemargin}{-10.4mm}   %%{-0.5in}
+  \setlength{\evensidemargin}{-10.4mm}  %%{-0.5in}
+  \setlength{\marginparwidth}{0mm}
+  \setlength{\topmargin}{-0.80in}
+%  \setlength{\headheight}{40mm}
+  \setlength{\headheight}{20mm}
+  \setlength{\headsep}{10pt}
+  \setlength{\textwidth}{185mm}
+%    \setlength{\textheight}{230mm}
+   \ifdm@s@DiffusionNouR
+      \setlength{\textheight}{230mm} 
+  \else
+     \setlength{\textheight}{220mm}
+    \fi
+  \setlength{\voffset}{20mm}
+%%
+%% utilisation de petites majuscules pour les titre de niveau section
+  \titleformat{\section}
+       {\normalfont\Large\bfseries\scshape}{\thesection}{1em}{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               %
+%   raccourcis personnels       %
+%                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{fancyplain}
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{\markright{#1}}
+                                % champs à définir :
+                                % ----------------------
+\def\dm@s@dateCompilation{\number\day/\number\month/\number\year}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%  Interface utilisateur
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% commandes obligatoires
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Titre
+%%%%%%%%%%%%%%%%%%%%
+\def\settitre#1{%
+  \global\advance\dm@s@ScoreAQ\@ne
+  \gdef\dm@s@titre{#1} %}
+  \gdef\dm@s@titrecourt{#1}}
+% possibilité de définir deux titres (page de garde/cadre d'entête) si titre trop long
+\def\settitrecourt#1{%
+  \gdef\dm@s@titrecourt{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Auteurs
+%%%%%%%%%%%%%%%%%%%%%%
+\def\dm@s@defaultFonctionAuteur{Ingénieur-chercheur}
+\newcount\dm@s@numberAuteur
+\dm@s@numberAuteur = \z@
+
+\newdimen\dm@s@hauteurResume
+% % \dm@s@hauteurResume = 10cm
+% \dm@s@hauteurResume = 7cm
+%bp, 2015-03 : fait + loin  via setresume
+
+\newif\ifdm@s@auteurASignature
+\dm@s@auteurASignaturetrue
+\newif\ifdm@s@auteurBSignature
+\dm@s@auteurBSignaturetrue
+\newif\ifdm@s@auteurCSignature
+\dm@s@auteurCSignaturetrue
+\newif\ifdm@s@auteurDSignature
+\dm@s@auteurDSignaturetrue
+\newif\ifdm@s@auteurESignature
+\dm@s@auteurESignaturetrue
+\newif\ifdm@s@auteurFSignature
+\dm@s@auteurFSignaturetrue
+\newif\ifdm@s@auteurGSignature
+\dm@s@auteurGSignaturetrue
+\newif\ifdm@s@auteurHSignature
+\dm@s@auteurHSignaturetrue
+
+\def\dm@s@setAuteur#1#2{%
+  \ifcase\dm@s@numberAuteur\or
+  \def\dm@s@auteurAName{#1} \def\dm@s@auteurAFunction{#2} \dm@s@auteurASignaturetrue \or
+  \def\dm@s@auteurBName{#1} \def\dm@s@auteurBFunction{#2} \dm@s@auteurBSignaturetrue \or
+  \def\dm@s@auteurCName{#1} \def\dm@s@auteurCFunction{#2} \dm@s@auteurCSignaturetrue \or
+  \def\dm@s@auteurDName{#1} \def\dm@s@auteurDFunction{#2} \dm@s@auteurDSignaturetrue \or
+  \def\dm@s@auteurEName{#1} \def\dm@s@auteurEFunction{#2} \dm@s@auteurESignaturetrue \or
+  \def\dm@s@auteurFName{#1} \def\dm@s@auteurFFunction{#2} \dm@s@auteurFSignaturetrue \or
+  \def\dm@s@auteurGName{#1} \def\dm@s@auteurGFunction{#2} \dm@s@auteurGSignaturetrue \or
+  \def\dm@s@auteurHName{#1} \def\dm@s@auteurHFunction{#2} \dm@s@auteurHSignaturetrue \fi
+}
+
+\def\dm@s@ajoutAuteur#1#2{%
+  \ifnum\dm@s@numberAuteur < 8 %
+    \global\advance\dm@s@numberAuteur\@ne
+    \dm@s@setAuteur{#1}{#2}
+  \else
+    \PackageWarning{Classe docDM2S}{8 auteurs maxi}%
+  \fi
+}
+
+\def\setauteur#1{%
+  \dm@s@ajoutAuteur{#1}{\dm@s@defaultFonctionAuteur}
+}
+
+\def\setauteurfonction#1#2{%
+  \dm@s@ajoutAuteur{#1}{#2}
+}
+% \def\setauteurunite#1#2{%
+%   \dm@s@ajoutAuteur{#1}{\dm@s@defaultFonctionAuteur}
+%   \def\dm@s@auteurAUnite
+% }
+
+\def\addauteur#1{%
+  \dm@s@ajoutAuteur{#1}{\dm@s@defaultFonctionAuteur}
+}
+\def\addauteurfonction#1#2{%
+  \dm@s@ajoutAuteur{#1}{#2}
+}
+
+\def\dm@s@setAuteurSansSignature#1{%
+  \ifcase\dm@s@numberAuteur\or
+  \def\dm@s@auteurAName{#1} \dm@s@auteurASignaturefalse \or
+  \def\dm@s@auteurBName{#1} \dm@s@auteurBSignaturefalse \or
+  \def\dm@s@auteurCName{#1} \dm@s@auteurCSignaturefalse \or
+  \def\dm@s@auteurDName{#1} \dm@s@auteurDSignaturefalse \or
+  \def\dm@s@auteurEName{#1} \dm@s@auteurESignaturefalse \or
+  \def\dm@s@auteurFName{#1} \dm@s@auteurFSignaturefalse \or
+  \def\dm@s@auteurGName{#1} \dm@s@auteurGSignaturefalse \or
+  \def\dm@s@auteurHName{#1} \dm@s@auteurHSignaturefalse \fi
+}
+
+
+\def\dm@s@ajoutAuteurSansSignature#1{%
+  \ifnum\dm@s@numberAuteur < 8 %
+    \global\advance\dm@s@numberAuteur\@ne
+    \dm@s@setAuteurSansSignature{#1}
+  \else
+    \PackageWarning{Classe docDM2S}{8 auteurs maxi}%
+  \fi
+}
+\def\setauteursanssignature#1{
+  \dm@s@ajoutAuteurSansSignature{#1}
+}
+\def\addauteursanssignature#1{
+  \dm@s@ajoutAuteurSansSignature{#1}
+}
+
+%% bp : (en s'inspirant des correctifs de jc sur la version B)
+%% affichage de la fonction des auteurs sur la 1ère page 
+%% (pourrait etre amélioré en choisissant quels sont les auteurs dont il faut afficher la fonction)
+\newif\ifdm@s@showauteurA
+\dm@s@showauteurAfalse
+\newif\ifdm@s@showauteurB
+\dm@s@showauteurBfalse
+\newif\ifdm@s@showauteurC
+\dm@s@showauteurCfalse
+\def\showauteur#1{
+  \ifthenelse{\equal{#1}{1}}{\dm@s@showauteurAtrue}{
+  \ifthenelse{\equal{#1}{2}}{\dm@s@showauteurBtrue}{
+  \ifthenelse{\equal{#1}{3}}{\dm@s@showauteurCtrue}{
+}
+}
+}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Commandes facultatives             %%
+%%   au sens de la compilation LaTeX  %%
+%%   mais obligatoire pour l'AQ       %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%   Numero chrono
+%%%%%%%%%%%%%%%%%%%%%%   
+\def\setnumero#1{
+  \global\advance\dm@s@ScoreAQ\@ne
+  \dm@s@haveNumeroChronotrue
+  \def\dm@s@numeroChrono{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%   Code barre chrono
+%%%%%%%%%%%%%%%%%%%%%%   
+\newif\ifdm@s@haveBarCode
+\dm@s@haveBarCodefalse
+\def\setcodebarre#1{
+  \dm@s@haveBarCodetrue
+  \def\dm@s@codebarre{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%% 
+%% Numero de publication (PU)
+%%%%%%%%%%%%%%%%%%%%%% 
+\def\setnumeropublication#1{
+  \ifdm@s@isPublication
+    \dm@s@havenumeropublicationtrue
+    \def\dm@s@numeropublication{#1}
+  \else
+    \ClassWarning{docDM2S}{** le numero de publication est valable que pour une PUBLICATION **.}
+  \fi}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Gestion des indices
+%%%%%%%%%%%%%%%%%%%%%%
+\newcount\dm@s@lastIndice
+\dm@s@lastIndice  = \z@
+
+\def\dm@s@indice{--}
+\def\dm@s@dateIndice{--/--/--}
+
+\def\dm@s@setIndice#1#2{
+  \def\dm@s@indice{#1}
+  \def\dm@s@dateIndice{#2}}
+
+
+
+\def\d@teind@ce@{--/--/--}
+\def\d@teind@ce@@{--/--/--}
+\def\d@teind@ce@@@{--/--/--}
+\def\l@gind@ce@{ ---   non défini ----}
+\def\l@gind@ce@@{ ---   non défini ----}
+\def\l@gind@ce@@@{ ---   non défini ----}
+
+\def\dm@s@defaultNatureIndiceA{Document initial}
+\def\dm@s@PagesModifieesB{Tout le document}
+\def\dm@s@PagesModifieesC{Tout le document}
+
+
+%% Indice A
+\def\setindiceA#1#2{%
+  \ifnum\dm@s@lastIndice<1
+    \dm@s@lastIndice = 1
+    \dm@s@setIndice{A}{#1}
+  \else
+    \PackageError{Classe docDM2S}{Indice A deja defini avec pour date("\d@teind@ce@") et nature ("\l@gind@ce@") }%
+  \fi
+  \def\d@teind@ce@{#1}
+  \def\l@gind@ce@{#2}}
+
+\def\setindiceAdate#1{%
+  \setindiceA{#1}{\dm@s@defaultNatureIndiceA}}
+
+\def\setindiceAnature#1{%
+  \setindiceA{\dm@s@dateCompilation}{#1}}
+
+\def\setindiceAlog#1{%
+  \PackageWarning{Classe docDM2S}{Deprecated method "setindiceAlog" : use "setindiceAnature" method}
+  \setindiceAnature{#1}}
+
+
+%% Indice B
+\def\setindiceB#1#2{%
+  \ifnum\dm@s@lastIndice<2
+    \dm@s@lastIndice = 2
+    \dm@s@setIndice{B}{#1}
+  \else
+    \PackageError{Classe docDM2S}{Indice B deja defini avec pour date("\d@teind@ce@@") et nature ("\l@gind@ce@@") }%
+  \fi
+  \def\d@teind@ce@@{#1}
+  \def\l@gind@ce@@{#2}}
+
+\def\setindiceBall#1#2#3{%
+  \setindiceB{#1}{#2}%
+  \def\dm@s@PagesModifieesB{#3}}
+
+\def\setindiceBnature#1{%
+  \setindiceB{\dm@s@dateCompilation}{#1}}
+
+\def\setindiceBlog#1{%
+  \PackageWarning{Classe docDM2S}{Deprecated method "setindiceBlog" : use "setindiceBnature" method}
+  \setindiceBnature{#1}}
+
+%% Indice C
+\def\setindiceC#1#2{%
+  \ifnum\dm@s@lastIndice<3
+    \dm@s@lastIndice = 3
+    \dm@s@setIndice{C}{#1}
+  \else
+    \PackageError{Classe docDM2S}{Indice C deja defini avec pour date("\d@teind@ce@@@") et nature ("\l@gind@ce@@@") }%
+  \fi
+  \def\d@teind@ce@@@{#1}
+  \def\l@gind@ce@@@{#2}}
+
+\def\setindiceCall#1#2#3{%
+  \setindiceC{#1}{#2}%
+  \def\dm@s@PagesModifieesC{#3}}
+
+\def\setindiceCnature#1{%
+  \setindiceC{\dm@s@dateCompilation}{#1}}
+
+\def\setindiceClog#1{%
+  \PackageWarning{Classe docDM2S}{Deprecated method "setindiceClog" : use "setindiceCnature" method}
+  \setindiceCnature{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% References
+%%   Reference A: interne DM2S
+%%   Reference B: pour une autre référence externe au DM2S (ANDRA, Neptune, ...)
+%%%%%%%%%%%%%%%%%%%%%% 
+\def\dm@s@ReferenceAName{}
+% \def\dm@s@referenceANumber{\dm@s@abrService/\dm@s@abrLaboratoire/\dm@s@abrTypeDocument/\dm@s@numeroChrono/\dm@s@indice}
+%bp,2016 \def\dm@s@referenceANumber{\dm@s@abrService/\dm@s@abrLaboratoire/\dm@s@abrTypeDocument/\ifdm@s@haveNumeroChrono\dm@s@numeroChrono\else\textcolor{red}{\dm@s@defaultNumeroChrono}\fi/\dm@s@indice}
+\def\dm@s@referenceNumber{\dm@s@abrService/\dm@s@abrLaboratoire/\dm@s@abrTypeDocument/\ifdm@s@haveNumeroChrono\dm@s@numeroChrono\else\textcolor{red}{\dm@s@defaultNumeroChrono}\fi}
+\def\dm@s@referenceANumber{\dm@s@referenceNumber/\dm@s@indice}
+
+%bp,2016 : \dm@sdiffusion vaut - l'indice (A) si diffusion Normale ou Restreinte
+%                              - CCEA, CD, ou SD pour les autres cas 
+\ifdm@s@DiffusionNouR
+  \def\dm@sdiffusion{\dm@s@indice}
+\fi
+
+\def\setreferenceB#1#2{%
+  \dm@s@haveReferenceExternetrue
+  \def\dm@s@referenceBName{#1}%
+  \def\dm@s@referenceBNumber{#2}%
+}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Resume
+%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\setresume}[2][7cm]{%
+  \dm@s@hauteurResume = #1 
+  \def\dm@s@Resume{#2}
+  \ifdm@s@isSpecification
+    \dm@s@haveResumefalse
+    \ClassWarning{docDM2S}{** le resume est prohibe pour une SPECIFICATION **.}%
+  \else
+    \dm@s@haveResumetrue
+  \fi
+}
+
+\def\setresumeDO#1{%
+%bp : attention a verifier que dm@s@DiffusionNormale soit deja attribué (et pas seulement valeur par défaut)
+  \ifdm@s@DiffusionNormale
+     \ClassWarning{docDM2S}{** pas de resumeDO pour une diffusion normale **.}%
+   \else
+    \dm@s@haveResumeDOtrue
+    \def\dm@s@resumeDO{#1}
+  \fi
+  }
+
+\def\setresumeanglais#1{%
+  \dm@s@haveResumeAnglaistrue
+  \def\dm@s@resumeAnglais{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% DiffussionInterne
+%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@havediffusioninterne
+\dm@s@havediffusioninternefalse
+\def\setdiffusioninterne#1{%
+  \dm@s@havediffusioninternetrue
+  \def\dm@s@DiffusionInterne{#1}}
+  
+\def\dm@nbexemplaires{\textcolor{red}{Nombre a preciser via \textbackslash setnbexemplaire}}
+\def\setnbexemplaire#1{\def\dm@nbexemplaires{#1}} %ajout bp,2016
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% DiffussionExterne
+%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@havediffusionexterne
+\dm@s@havediffusionexternefalse
+\def\setdiffusionexterne#1{%
+  \dm@s@havediffusionexternetrue
+  \def\dm@s@DiffusionExterne{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% DiffussionResume
+%%%%%%%%%%%%%%%%%%%%%%
+\newif\ifdm@s@haveDiffusionResume
+\dm@s@haveDiffusionResumefalse
+\def\setdiffusionresume#1{%
+  \dm@s@haveDiffusionResumetrue
+  \def\dm@s@DiffusionResume{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Most cles
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setmotscles#1{%
+  \dm@s@haveMotsClefstrue
+  \def\dm@s@MotsClefs{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Parteanires/clients
+%% References Acoord/contrat
+%% Type Action
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setreferencesaction#1#2#3{%
+  \dm@s@havereferenceactiontrue
+  \def\dm@s@partenaires{#1}
+  \def\dm@s@referenceAccord{#2}
+  \def\dm@s@typeAction{#3}}
+       
+%%%%%%%%%%%%%%%%%%%%%%
+%% DOB/Programme
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setaffaire#1#2{%
+  \dm@s@havedobtrue
+  \gdef\dm@s@DOB{#1}
+  \gdef\dm@s@ProgrammeName{#2}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Nom du projet
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setprojet#1{%
+  \dm@s@haveprojettrue
+  \gdef\dm@s@ProjetName{#1}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Numéro EOTP
+%%%%%%%%%%%%%%%%%%%%%%
+\def\seteotp#1{%
+  \dm@s@haveeotptrue
+  \gdef\dm@s@EOTP{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%% References internes CEA                %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+\newif\ifdm@s@havereferenceinterne
+\dm@s@havereferenceinternefalse
+\def\setreferencesinterne#1#2#3#4{%
+  \dm@s@havereferenceinternetrue
+  \gdef\dm@s@DOB{#1}
+  \gdef\dm@s@ProgrammeName{#2}
+  \gdef\dm@s@ProjetName{#3}
+  \gdef\dm@s@EOTP{#4}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% JALON
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setjalon#1#2{%
+  \dm@s@haveJalontrue
+  \def\dm@s@jalonName{#1}
+  \def\dm@s@jalonTitle{#2}
+}
+
+%%%%%%%%%%%%%%%%%%%%%% 
+%% Delai de Confidentialité
+%%%%%%%%%%%%%%%%%%%%%% 
+\def\setdelaiconfidentialite#1{%
+  \dm@s@haveDelaiConfidentialitetrue
+  \def\dm@s@delaiConfidentialite{#1}
+}
+
+%%%%%%%%%%%%%%%%%%%%%% 
+%% Cahier de Laboratoire
+%%%%%%%%%%%%%%%%%%%%%% 
+\def\setcahierlaboratoire#1{%
+  \dm@s@haveCahierLaboratoiretrue
+  \def\dm@s@cahierLaboratoire{#1}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Date officielle
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setdate#1{%
+  \dm@s@haveNotDatedfalse
+  \def\dm@s@dateOfficielle{#1}}
+% 
+% --> mis + haut
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Bas de page personnalise 
+%%%%%%%%%%%%%%%%%%%%%%
+\def\setbasdepage#1{
+  \dm@s@havebasdepagetrue
+  \gdef\dm@sbasdepage{#1}}
+%
+% %%%%%%%%%%%%%%%%%%%%%%
+% %% Niveau de diffusion
+% %%%%%%%%%%%%%%%%%%%%%%
+% 
+\def\dm@s@putDingDiffusion#1{#1 {\large{\ding{56}}} \fi}
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+%% Action off 
+%%    List figures
+%%    List tables
+%%    Timbre
+%%%%%%%%%%%%%%%%%%%%%%
+\def\nosommaire{%
+  \dm@s@haveSommairefalse}
+\def\nolistoffigures{%
+  \dm@s@haveListOfFiguresfalse}
+\def\nolistoftables{%
+  \dm@s@haveListOfTablesfalse}
+\def\notimbre{%
+  \dm@s@haveTimbrefalse}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% Valeurs par défaut
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% OBLIGATOIRE
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \ifdm@s@isSpecification
+  \else
+    \setresume{\textcolor{red}{\Large Résumé à rédiger via la commande \textbackslash setresume\{\}.}}
+  \fi
+  \ifdm@s@isPublication
+    \setresumeanglais{\textcolor{red}{\Large Résumé ANGLAIS à rédiger via la commande \textbackslash setresumeanglais\{\}.}}
+  \fi
+  \setmotscles{\textcolor{red}{\Large Mots cles à définir via la commande \textbackslash setmotscles\{\}.}}
+  \setverificateur{\textcolor{red}{\small \textbackslash setverificateur\{1\}\{2\} --Arg1--}}{\textcolor{red}{\footnotesize --Arg2--}}
+
+  \setreferencesinterne{\textcolor{red}{\footnotesize \textbackslash setreferencesinterne\{1\}\{2\}\{3\}\{4\}}}{\textcolor{red}{\footnotesize --Arg2--}}{\textcolor{red}{\footnotesize --Arg3--}}{\textcolor{red}{\footnotesize --Arg4--:X-XXXX-YY-ZZ-UU-VZ}}
+
+
+
+ %% 
+ %%  
+ %%  ____________________________________________________________________________ 
+ %% |                                                                            | 
+ %% |                  Redéfinition de la mise en page                           | 
+ %% |____________________________________________________________________________| 
+ %%
+ %%  version sous Assurance Qualité
+ %%
+ \def\dm@s@aqmisenpagecategorieB{%
+%    \setlength{\unitlength}{1mm}
+
+
+%  \setlength{\textwidth}{180mm}
+
+%    \setlength{\textheight}{207mm}
+%    
+%    \setlength{\oddsidemargin}{-10.4mm}
+%    \setlength{\evensidemargin}{-10.4mm}
+%    \setlength{\headsep}{0mm}
+%    \setlength{\headheight}{40mm}
+   
+   %% 
+   %%  ____________________________________________________________________________
+   %% |                                                                            |
+   %% |                       Entête et pieds de pages                             |
+   %% |____________________________________________________________________________|
+   %%
+   \chead{}
+   \rhead{}
+   \lhead{\dm@s@cadreHautPage}
+
+   \cfoot{\small \dm@s@footerNote}
+   \lfoot{}
+   \rfoot{}
+   \renewcommand{\headrulewidth}{0.0pt}
+   \renewcommand{\footrulewidth}{0.2pt}
+%    \renewcommand{\footskip}{30pt}
+
+%% ---- Debut ajout BP --  Modif de l'emplacement par CF
+  \ifdm@s@havereferenceaction
+    \ifthenelse{\equal{\dm@s@referenceAccord}{}}{\dm@s@haveactionfalse}{\dm@s@haveactiontrue} %debut ajout
+    \ifdm@s@haveaction
+    %\else --> petite correction
+        \ifthenelse{\equal{\dm@s@referenceAccord}{SO}}{\dm@s@haveactionfalse}{\dm@s@haveactiontrue} 
+    \fi
+  \else
+    \PackageWarning{Classe docDM2S}{!!! Referenceaction non definie !!!}
+  \fi
+%% ---- Fin ajout BP --  Modif de l'emplacement par CF
+
+
+   %%  ____________________________________________________________________________
+   %% |                                                                            |
+   %% |                                PAGE 1 : PAGE DE GARDE                      |
+   %% |____________________________________________________________________________|
+   %%
+   \newpage
+%    \thispagestyle{empty}
+   \thispagestyle{plain}
+   \chead{}
+   \rhead{}
+   \lhead{}
+   \setlength{\parindent}{0mm}
+   
+   \setlength{\extrarowheight}{3mm}
+
+  
+%%--------------------- TABLEAU EN HAUT DE LA PAGE 1 -------------------------------
+
+   \raisebox{24mm}[0pt]{%%
+     \begin{tabular}{|@{}p{55mm}@{}|@{}>{\centering}m{75mm}@{}|@{}m{55mm}@{}|}
+       \hline
+       & 
+       & 
+         \ifdm@s@haveBarCode{
+  		  \raisebox{-17mm}[10pt][10pt]{\hspace{1mm}\includegraphics[width=50mm]{\dm@s@codebarre}}
+           }
+         \fi
+        \\  
+       &
+%% ---- EN HAUT AU MILIEU : EVENTUEL TIMBRE DE CONFIDENTIALITE ----
+%% bp,2016-05-31 : Mise a jour des timbres 
+       \ifdm@s@haveTimbre
+       \ifdm@s@DiffusionRestreinte
+       \raisebox{-1ex}{\fboxrule2pt \fboxsep3mm \fcolorbox{red}{white}{\Large{\textcolor{red}{\textbf{DIFFUSION RESTREINTE}}}}}
+       \fi
+       \ifdm@s@DiffusionCCEA
+        \raisebox{-1ex}{
+          \fboxrule2pt \fboxsep1mm \fcolorbox{red}{white}{
+          \begin{minipage}{63mm}
+            \begin{center} 
+              \Large{\textcolor{red}{\textbf{CONFIDENTIEL CEA}}} \\
+              \footnotesize{\textcolor{red}{Ce document ne doit être communiqué qu'aux personnes qualifiées pour le connaître}} 
+            \end{center}
+          \end{minipage}
+          }  }
+       \fi
+       \ifdm@s@DiffusionCD
+        \raisebox{-1ex}{
+          \fboxrule2pt \fboxsep1mm \fcolorbox{red}{white}{
+          \begin{minipage}{63mm}
+            \begin{center} 
+              \Large{\textcolor{red}{\textbf{CONFIDENTIEL DEFENSE}}} \\
+              \footnotesize{\textcolor{red}{Ce document ne doit être communiqué qu'aux personnes qualifiées pour le connaître}} 
+            \end{center}
+          \end{minipage}
+          }  }
+       \fi
+       \ifdm@s@DiffusionSD
+        \raisebox{-1ex}{
+          \fboxrule2pt \fboxsep1mm \fcolorbox{red}{white}{
+          \begin{minipage}{63mm}
+            \begin{center} 
+              \Large{\textcolor{red}{\textbf{SECRET DEFENSE}}} \\
+              \footnotesize{\textcolor{red}{Toute personne qui détient ce document sans avoir été qualifié pour le connaître tombe sous le coup du code pénal réprimant les atteintes au secret défense nationale}} 
+            \end{center}
+          \end{minipage}
+          }  }
+       \fi
+       \fi
+       & 
+%% ---- EN HAUT A DROITE : RIEN ou REFERENCE DU DOCUMENT ----
+         \ifdm@s@haveBarCode
+         \else
+         {   %% ajout bp
+            \ifdm@s@DiffusionNouR
+             %on ne met rien pour l'instant!
+            \else
+             \hspace{3mm}
+             \begin{minipage}[b][0mm][c]{50mm}
+             \begin{center}
+                \textcolor{red}{CEA/DEN/DANS/DM2S/ \dm@s@referenceNumber/\dm@sdiffusion}
+             \end{center}
+             \end{minipage}
+            \fi
+% bp : finalement on enleve ! en 2016, on doit le remettre (on le fait via minipage)!
+         }
+         \fi
+       \\
+%% ---- LIGNE DU MILIEU : Ne pas diffuser ... ----         
+       & 
+       \ifdm@s@haveTimbre
+       \ifdm@s@DiffusionNormale
+       \else
+       \raisebox{1ex}{\large{\textcolor{red}{\textbf{\small Ne pas diffuser sans autorisation de l'émetteur}}}}
+       \fi
+       \fi
+       & \\
+%% ---- EN BAS A DROITE : LOGO CEA ----         
+       \ifdm@sPDF
+%          \raisebox{-1ex}[0pt]{\hspace{6mm}\includegraphics[width=43mm,height=32mm]{CEA_FR_logotype}} & 
+         \raisebox{ 1ex}[0pt]{\hspace{6mm}\includegraphics[width=43mm,height=32mm]{CEA_FR_logotype}} & 
+       \else
+%alberto         \raisebox{-23mm}[0pt]{\hspace{0.75mm}\includegraphics[scale=0.254]{logo_cea_color}} &
+         \raisebox{-2.5mm}[0pt]{\hspace{5.50mm}\includegraphics[scale=0.154]{logo_cea_color}} &
+       \fi
+       \hrule 
+%% ---- EN BAS AU MILIEU : TYPE DE DOCUMENT + CEA/DEN ----         
+       \begin{minipage}[c][10mm][c]{75mm}
+       \begin{center}
+       %\hspace{\stretch{1}} 
+            {\textbf{\expandafter\MakeUppercase\expandafter{\dm@s@typeDocument\ CEA/\dm@s@abrDirection}}} \hspace{\stretch{1}} 
+       \end{center}       
+       \end{minipage} & 
+       \hrule \begin{minipage}[c][10mm][c]{55mm} \hspace{\stretch{1}} Page~\thepage/\pageref{LastPage} \hspace{\stretch{1}} \end{minipage}  \\
+       \hline
+     \end{tabular}}
+     
+   
+%%--------------------- MILIEU DE LA PAGE 1 -------------------------------
+
+   \vspace{\stretch{10}}
+   \begin{center}
+
+%% ---- HIERARCHIE CEA ----
+     \raisebox{30mm}[0pt]{\Large  \dm@s@direction}\\
+     \vspace{\stretch{0.5}}
+     \raisebox{30mm}[0pt]{\Large  \dm@s@sousdirection}\\
+     \vspace{\stretch{0.5}}
+     \raisebox{30mm}[0pt]{\Large  \dm@s@departement}\\
+     \vspace{\stretch{0.5}}
+     \raisebox{30mm}[0pt]{\Large  \dm@s@service}\\
+     
+%% ---- TITRE ----
+     \vspace{\stretch{2}}
+     \begin{minipage}[c][12mm][c]{180mm}
+       \begin{center}
+         \Huge  {\dm@s@titre}
+       \end{center}
+     \end{minipage}
+     
+     \ifdm@sPDF
+        \vspace{\stretch{5}}
+     \else
+        \vspace{\stretch{12}}     
+     \fi
+     
+%% ---- AUTEURS ----
+     {\huge  { \dm@s@auteurAName  \ifdm@s@showauteurA $^*$        \fi \\
+         \ifnum\dm@s@numberAuteur>1
+           \dm@s@auteurBName      \ifdm@s@showauteurB $^\dagger$  \fi \\
+         \fi
+         \ifnum\dm@s@numberAuteur>2
+           \dm@s@auteurCName      \ifdm@s@showauteurC $^\ddagger$ \fi\\
+         \fi
+         \ifnum\dm@s@numberAuteur>3
+           \dm@s@auteurDName \\
+         \fi
+         \ifnum\dm@s@numberAuteur>4
+           \dm@s@auteurEName \\
+         \fi
+         \ifnum\dm@s@numberAuteur>5
+           \dm@s@auteurFName \\
+         \fi
+         \ifnum\dm@s@numberAuteur>6
+           \dm@s@auteurGName \\
+         \fi
+         \ifnum\dm@s@numberAuteur>7
+           \dm@s@auteurHName \\
+         \fi
+       }
+     }
+     
+%% ---- Reference A : CEA/DEN/DM2S/.../NT/annee-numero/A ----
+     \vspace{\stretch{4}}
+     \ifdm@s@isdmssdir
+       {\Large  \dm@s@ReferenceAName\ CEA/\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@referenceANumber} \\
+     \else
+       \ifdm@s@DiffusionNouR
+         {\Large  {\dm@s@ReferenceAName\ CEA/\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@referenceANumber}} \\
+       \else
+         {\Large {\textcolor{red}{\dm@s@ReferenceAName\ CEA/\dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@referenceANumber}}} \\
+       \fi 
+     \fi
+     
+%% ---- Reference B si existe ----
+     \ifdm@s@haveReferenceExterne
+       \vspace{\stretch{2}}
+       {\Large  \dm@s@referenceBName : \dm@s@referenceBNumber}\\
+     \fi
+     \vspace{\stretch{2}}
+     \ifdm@s@isDraft
+       \Large{\textcolor{red}{PROJET}}\\
+     \else
+       \Large{\phantom{PROJET}}
+     \fi
+     
+%% ---- Ref de l'action (2eme argument de \setreferencesaction) ----
+     \ifdm@s@haveaction % fin ajout BP
+       \vspace{\stretch{4}}
+       {\large Document émis dans le cadre de l'accord} {\large \dm@s@referenceAccord}
+     \fi
+     \vspace{\stretch{4}}
+     
+%% ---- Numero d exemplaires ----
+     \ifdm@s@DiffusionCD
+       \Large{N°~\phantom{999}/\dm@nbexemplaires}
+     \fi
+     
+   \end{center}   
+
+%% ---- fonction de l'auteur si demandée ----
+   \vspace{\stretch{4}}
+   \ifdm@s@showauteurA      {$^*$        : \dm@s@auteurAFunction}   \fi
+   \ifdm@s@showauteurB      {$^\dagger$  : \dm@s@auteurBFunction}   \fi
+   \ifdm@s@showauteurC      {$^\ddagger$ : \dm@s@auteurCFunction}   \fi
+
+   
+%%--------------------- BAS DE LA PAGE 1 -------------------------------
+
+%% ---- adresse secretariat ----
+   \vspace{\stretch{3}}
+   \renewcommand{\arraystretch}{0.5}
+   \begin{tabular}{@{}p{135mm}m{16mm}m{16mm}}
+     Commissariat à l'énergie atomique et aux énergies alternatives & & \\
+     Centre de \dm@s@laboratoireCentre\ - \dm@s@abrService/\dm@s@abrLaboratoire\ - Bâtiment \dm@s@laboratoireBatiment\ - Point Courrier \dm@s@laboratoirePC  & & \\
+     91191 Gif sur Yvette Cedex - FRANCE \\
+     Tél. : +33 (0)1 69 08 \dm@s@laboratoireTel\ - Fax : +33 (0)1 69 08 \dm@s@laboratoireFax\ - \dm@s@laboratoireMail\/@cea.fr & & \\
+     \'Etablissement public à caractère industriel et commercial & & \\
+     RCS PARIS B 775 685 019 &
+%     \ifdm@sPDF
+%     \raisebox{-1ex}[0pt]{\includegraphics[width=20mm,height=20mm]{logo_DM2S}}
+%     \else
+%     \raisebox{-1ex}[0pt]{\includegraphics[width=20mm,height=20mm]{logo_DM2S}}
+%     \fi
+     & 
+%     \ifdm@sPDF
+%     \raisebox{-1ex}[0pt]{\includegraphics[width=16mm,height=20mm]{logo_afaq}}
+%     \else
+%     \raisebox{-1ex}[0pt]{\includegraphics[width=16mm,height=20mm]{logo_afaq}}
+%     \fi
+% ---------------------- modif 2014 : retire le logo aq et décale le DM2S
+     \ifdm@sPDF
+     \raisebox{-1ex}[0pt]{\includegraphics[width=20mm,height=20mm]{logo_DM2S}}
+     \else
+     \raisebox{-1ex}[0pt]{\includegraphics[width=20mm,height=20mm]{logo_DM2S}}
+     \fi
+     %\\
+   \end{tabular}
+   
+%% ---- qualite ?? ----
+   \vspace{1ex}
+   \hrule
+   \vspace{1ex}
+   \par{\small Réf du formulaire : F1-DM2S/DIR/PR/003 classe \LaTeX\ {\textsc docDM2S} version C}
+   
+%% ---- base de page (cf. dm@s@footerNote) ----
+%    \begin{center}
+%      {\small \dm@s@footerNote}
+%    \end{center}
+   % modif bp pour avoir la meme taille des footer ==> ne marche pas bien
+   \renewcommand{\footrulewidth}{0.2pt}
+%    \lfoot{\small \dm@s@footerNoteBIS}
+   \lfoot{}
+   \cfoot{\small \dm@s@footerNote}
+   \rfoot{}
+
+   
+   
+   %%  ____________________________________________________________________________
+   %% |                                                                            |
+   %% |                           PAGE 2 : Fiche Documentaire                      |
+   %% |____________________________________________________________________________|
+   %%
+   \setlength{\extrarowheight}{0mm}
+   \newpage
+   \chead{}
+   \rhead{}
+   \lhead{\dm@s@cadreHautPage}
+   \lfoot{}
+   \cfoot{\small \dm@s@footerNote}
+   \rfoot{}
+   \renewcommand{\arraystretch}{1.0} % Hauteur des lignes des tableaux
+   \centering
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %% Confidentialité                        %%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   \vspace{5mm}
+
+%   \begin{tabular}{|@{}p{35.85mm}@{}|@{}p{35.85mm}@{}|@{}p{35.85mm}@{}|@{}p{35.85mm}@{}|@{}p{35.85mm}@{}|}
+%     \hline
+%     \multicolumn{5}{|c|}{ \textbf{\textsc{Niveau de confidentialité}}} \\
+%      \hline
+%      \hspace{15mm} DO \hspace{15mm} & \hspace{15mm} DR \hspace{15mm} & \hspace{15mm} CCEA \hspace{15mm} & \hspace{15mm} CD \hspace{15mm} & \hspace{15mm} SD \hspace{15mm} \\
+%      \hline
+%      \dm@s@putDingDiffusion{\ifdm@s@DiffusionNormale} & \dm@s@putDingDiffusion{\ifdm@s@DiffusionRestreinte} & \dm@s@putDingDiffusion{\ifdm@s@DiffusionCCEA}  & \dm@s@putDingDiffusion{\ifdm@s@DiffusionCD}  & \dm@s@putDingDiffusion{\ifdm@s@DiffusionSD} \\
+%     \hline
+%   \end{tabular}
+
+  \begin{tabularx}{17.5cm}{|X|X|X|X|X|}
+     \hline
+     \multicolumn{5}{|c|}{ \textbf{\textsc{Niveau de confidentialité}}} 
+     \tabularnewline
+      \hline
+       DO &  DR & CCEA & CD & SD
+      \tabularnewline
+      \hline
+      \dm@s@putDingDiffusion{\ifdm@s@DiffusionNormale} & \dm@s@putDingDiffusion{\ifdm@s@DiffusionRestreinte} & \dm@s@putDingDiffusion{\ifdm@s@DiffusionCCEA}  & \dm@s@putDingDiffusion{\ifdm@s@DiffusionCD}  & \dm@s@putDingDiffusion{\ifdm@s@DiffusionSD} 
+      \tabularnewline
+     \hline
+   \end{tabularx}
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %% Partenaire/Action                      %%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   \vspace{5mm}
+
+  \begin{tabularx}{17.5cm}{|X|X|X|}
+     \hline
+     {\textbf {\textsc{ Partenaires/Clients}}} & {\textbf {\textsc{ Accord}}}  &{\textbf {\textsc{Type d'action}}} 
+     \tabularnewline
+     \hline
+     \ifdm@s@havereferenceaction
+       \dm@s@partenaires &  \dm@s@referenceAccord &  \dm@s@typeAction \tabularnewline
+     \else
+       & & \tabularnewline
+     \fi
+     \hline
+   \end{tabularx}
+%bp : si il est ecrit SO c'est qu'il n'y a pas de referenceaction
+%    \ifthenelse{\equal{\dm@s@referenceAccord}{SO}}{\dm@s@havereferenceactionfalse}{\dm@s@havereferenceactiontrue}
+%--> ne marche pas ...
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %% References internes CEA                %%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   \vspace{5mm}
+  
+  \begin{tabularx}{17.5cm}{|X|X|X|X|}
+     \hline
+     \multicolumn{4}{|c|}{\textbf{\textsc{Références internes CEA}}}
+     \tabularnewline
+     \hline
+     {\textsc{Direction d'objectifs}} & {\textsc{Domaine}} & {\textsc{Projet}} & {\textsc{EOTP}}
+     \tabularnewline
+     \hline
+     \dm@s@DOB & \dm@s@ProgrammeName & \dm@s@ProjetName & \dm@s@EOTP 
+      \tabularnewline
+     \hline
+     {\textsc{Jalon}} & {\textsc{Intitulé du jalon}} & {\textsc{Délai contractuel de confidentialité}} &  {\textsc{Cahiers de laboratoire}}
+     \tabularnewline
+     \hline
+     \ifdm@s@haveJalon \dm@s@jalonName \fi & \ifdm@s@haveJalon \dm@s@jalonTitle \fi & \ifdm@s@haveDelaiConfidentialite \dm@s@delaiConfidentialite \fi & \ifdm@s@haveCahierLaboratoire \dm@s@cahierLaboratoire \fi 
+     \tabularnewline
+     \hline
+   \end{tabularx}
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   %% Suivi des versions                     %%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   \vspace{5mm}
+
+  \begin{tabularx}{17.5cm}{|>{\centering}m{1.4cm}|>{\centering}m{2.1cm}|X|X|}
+     \hline
+     \multicolumn{4}{|c|}{\textbf{\textsc{Suivi des versions}}}
+     \tabularnewline
+     \hline
+     {\textsc{Indice}} & {\textsc{Date}}  & {\textsc{Nature de l'évolution}} & {\textsc{Pages et chapitres modifiés}}
+     \tabularnewline
+     \hline
+     A                   & \d@teind@ce@ &  \l@gind@ce@   &  
+     \tabularnewline
+     \ifnum\dm@s@lastIndice>1
+     \hline
+     B                   & \d@teind@ce@@ & \l@gind@ce@@  & \dm@s@PagesModifieesB 
+     \tabularnewline
+     \fi
+     \ifnum\dm@s@lastIndice>2
+     \hline
+     C                   & \d@teind@ce@@@ & \l@gind@ce@@@ &  \dm@s@PagesModifieesC 
+     \tabularnewline
+     \fi
+     \hline
+   \end{tabularx}
+
+
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+   %% Signatures                             %%
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   \vspace{5mm}
+   
+   \ifnum\dm@s@numberAuteur<5
+   %\setlength{\extrarowheight}{5mm}
+   \renewcommand{\arraystretch}{2.2} % Hauteur des lignes des tableaux
+   \else
+   %\setlength{\extrarowheight}{3mm}
+   \renewcommand{\arraystretch}{2.0} % Hauteur des lignes des tableaux
+   \fi
+\begin{tabularx}{17.5cm}{|X|>{\centering}m{4.0cm}|>{\centering}m{3.5cm}|>{\centering} m{3.5cm}|>{\centering}m{2.1cm}|}
+     \hline
+     & {\textbf{\textsc{Nom}}} & {\textbf{\textsc{Fonction}}}  & {\textbf{\textsc{Visa}}} & {\textbf{\textsc{Date}}} 
+     \tabularnewline
+     \hline
+     {\textsc{Rédacteur}} & \dm@s@auteurAName & {\small {\textsc \dm@s@auteurAFunction}} & & 
+     \tabularnewline
+     \hline
+     \ifnum\dm@s@numberAuteur>1
+     \ifdm@s@auteurBSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurBName & {\small {\textsc \dm@s@auteurBFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>2
+     \ifdm@s@auteurCSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurCName & {\small {\textsc \dm@s@auteurCFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>3
+     \ifdm@s@auteurDSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurDName & {\small {\textsc \dm@s@auteurDFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>4
+     \ifdm@s@auteurESignature
+     {\textsc{Rédacteur}} & \dm@s@auteurEName & {\small {\textsc \dm@s@auteurEFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>5
+     \ifdm@s@auteurFSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurFName & {\small {\textsc \dm@s@auteurFFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>6
+     \ifdm@s@auteurGSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurGName & {\small {\textsc \dm@s@auteurGFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     \ifnum\dm@s@numberAuteur>7
+     \ifdm@s@auteurHSignature
+     {\textsc{Rédacteur}} & \dm@s@auteurHName & {\small {\textsc \dm@s@auteurHFunction}} & & 
+     \tabularnewline
+     \hline
+     \fi
+     \fi
+     {\textsc{Vérificateur}} & \dm@s@verificateurAName & {\small {\textsc \dm@s@verificateurAFunction}} & & 
+     \tabularnewline
+     \hline 
+     \ifnum\dm@s@numberVerificateur>2
+     {\textsc{Vérificateur}} & \dm@s@verificateurBName & {\small {\textsc \dm@s@verificateurBFunction}} & & 
+     \tabularnewline
+     \hline 
+     \fi
+     {\textsc{Approbateur}} & \dm@s@approbateurName & {\small {\textsc \dm@s@approbateurFunction}}& & 
+     \tabularnewline
+     \hline 
+     {\textsc{Autre visa}} & \ifnum\dm@s@NbVisa = 1 \dm@s@visaName \fi & \ifnum\dm@s@NbVisa = 1  {\small {\textsc \dm@s@visaFunction}} \fi & & 
+     \tabularnewline
+     \hline 
+     {\textsc{Émetteur}} & \dm@s@emetteurName & {\small {\textsc \dm@s@emetteurFunction}}& & 
+     \tabularnewline
+     \hline
+  \end{tabularx}
+
+   \setlength{\extrarowheight}{0mm}
+
+   %%  ____________________________________________________________________________
+   %% |                                                                            |
+   %% |                           PAGE 3 : RESUME                                  |
+   %% |____________________________________________________________________________|
+   %%
+   \newpage
+   %%
+   %% Divise la hauteur du résumé dans le cas d'une publication
+   %%
+   %%% \ClassWarning{docDM2S}{*** la hauteur du resume \the\dm@s@hauteurResume ***.}%
+   \ifdm@s@isPublication
+     \divide\dm@s@hauteurResume2\relax
+   \fi
+   %%% \ClassWarning{docDM2S}{*** la hauteur du resume \the\dm@s@hauteurResume ***.}%
+   %%
+
+   \vspace{\stretch{1}}
+   
+   \justifying
+   \textbf{\textsc{Mots Clefs}}
+   
+   \vspace{5pt}
+   \centering
+   \fbox{\parbox[t][2em][t]{0.946\textwidth}{\dm@s@MotsClefs}}
+
+   \vspace{\stretch{4}}
+
+   \ifdm@s@haveResume
+   \justifying
+   \textbf{\textsc{Résumé/Conclusions}}
+   
+   \vspace{5pt}
+   \centering
+   \fbox{\parbox[t][\dm@s@hauteurResume][t]{0.946\textwidth}{\dm@s@Resume}}
+   \fi
+
+   \vspace{\stretch{4}}
+
+   \ifdm@s@haveResumeDO
+   \newpage %%\dm@s@clearEmptyDoublePage
+   \justifying
+   \textbf{\textsc{Résumé/Conclusions de niveau DO} {\small en cas de niveau confidentialité supérieur du document}}
+   
+   \vspace{5pt}
+   \centering
+   \fbox{\parbox[t][\dm@s@hauteurResume][t]{0.95\textwidth}{\dm@s@resumeDO}}
+   \fi
+   
+   \setlength{\parindent}{5mm}
+   
+   %% ____________________________________________________________________________
+   %% |                                                                            |
+   %% |                           PAGE 4 : DIFFUSION INITIALE                      |
+   %% |____________________________________________________________________________|
+   %%
+   \newpage
+   
+   \justifying
+   
+   \setlength{\parindent}{0pt}
+   \begin{center}
+     {\textbf{\textsc{\Large Diffusion initiale}}} \\
+     %bp {\textbf{\small (Diffusion par email si document en DO)}}
+     %bp \ifdm@s@DiffusionNormale
+     \ifdm@s@DiffusionNouR
+       {\textbf{\small (Diffusion par email)}}
+     \else 
+       {\textbf{\small (Diffusion papier)}}
+     \fi
+   \end{center}
+   \vspace{\stretch{1}}
+
+
+   \renewcommand{\arraystretch}{1.0} % Hauteur des lignes des tableaux
+   {\bf \underline{Diffusion interne CEA}} \\
+   \ifdm@s@havediffusioninterne %si renseigné dans le fichier.tex via \setdiffusioninterne \begin{tabular} ...
+   \dm@s@DiffusionInterne
+   \else
+   \begin{tabular}[!H]{@{}ll}
+     \dm@s@auteurAName & \dm@s@verificateurALabotory \\ %%todo:\dm@s@auteurALabotory \\
+     \ifnum\dm@s@numberAuteur > 1
+     \dm@s@auteurBName & \dm@s@verificateurALabotory \\ %%todo:\dm@s@auteurBLabotory \\
+     \fi
+     \ifnum\dm@s@numberAuteur > 2
+     \dm@s@auteurCName & \dm@s@verificateurALabotory \\ %%todo: \dm@s@auteurCLabotory \\
+     \fi
+     \dm@s@verificateurAName & \dm@s@verificateurALabotory \\ 
+     \ifnum\dm@s@numberVerificateur>2
+     \dm@s@verificateurBName & \dm@s@verificateurBLabotory \\ 
+     \fi
+     \dm@s@approbateurName, Chef du \dm@s@abrLaboratoire & \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/\dm@s@abrLaboratoire\\
+     \dm@s@CdS, Chef du \dm@s@abrService & \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/DIR \\
+     \dm@s@CdD, Chef du \dm@s@abrDepartement & \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/DIR \\
+     \dm@s@CdDA, Adjoint du chef du \dm@s@abrDepartement & \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/DIR 
+   \end{tabular}
+   \fi
+   \vspace{\stretch{5}}
+   
+   {\bf \underline{Diffusion externe}} \\
+   \ifdm@s@havediffusionexterne
+     \dm@s@DiffusionExterne
+   \else
+     "sans objet"  
+   \fi
+   \vspace{\stretch{5}}
+
+   {\bf \underline{Diffusion résumé}} \\
+   \ifdm@s@haveDiffusionResume
+     \dm@s@DiffusionResume
+   \else
+%      "sans objet"  
+   \begin{tabular}[!H]{@{}ll}
+    \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/DIR \\
+    \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/DIR \\
+    \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/SERMA/DIR \\
+    \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/STMF/DIR \\
+    \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/Chefs de Laboratoire 
+   \end{tabular}
+   \fi
+   \vspace{\stretch{5}}
+   
+%bp   \ifdm@s@DiffusionNormale
+%bp   \else
+%bp      {\bf \underline{Diffusion autre que par mail}} \\
+%bp      Si niveau de confidentialité supérieur à la diffusion ordinaire (DO), voir guide DEN (OOSYQN000GU104).
+%bp   \fi
+
+ }
+ %% ____________________________________________________________________________
+ %% |                                                                            |
+ %% |             CADRE en haut des pages                                        |
+ %% |____________________________________________________________________________|
+ %% 
+ \def\dm@s@cadreHautPage{%%
+   \renewcommand{\arraystretch}{1.76}
+   \raisebox{17mm}[0pt]{%%
+%       \begin{tabular}{ | @{}p{55mm}@{} | @{}>{\centering}m{75mm}@{} | p{31mm} | p{13mm} |} % ca depasse si >100pages
+      \begin{tabular}{ | @{}p{55mm}@{} | @{}>{\centering}m{75mm}@{} | p{28mm} | p{16mm} |}
+      
+%----- LIGNE DU HAUT :      rien |  (mention PROJET)  |  type de document  | Page n°/nombre
+       \hline
+       &  
+       \ifdm@s@isDraft
+         {\textcolor{red}{\textbf{PROJET}}}
+       \fi
+       & %\begin{minipage}[c]{75mm}
+          {\footnotesize \dm@s@typeDocument\ \dm@s@abrDirection\ }
+          %\ifdm@s@DiffusionCD
+          %\\ {\footnotesize Confidentiel Défense}
+          %\fi          
+         %\end{minipage}
+       & {\small Page~\thepage/\pageref{LastPage}} \\     
+       
+%------ LIGNE DU MILIEU  : rien | TIMBRE | reference
+       \cline{3-4}
+       & 
+       \ifdm@s@haveTimbre
+         \ifdm@s@DiffusionRestreinte
+         {\fboxrule1mm \fboxsep2mm \fcolorbox{red}{white}{\LARGE{\textcolor{red}{\textbf{DIFFUSION RESTREINTE}}}}}
+         \fi
+         \ifdm@s@DiffusionCCEA
+         {\fboxrule1mm \fboxsep2mm \fcolorbox{red}{white}{\LARGE{\textcolor{red}{\textbf{CONFIDENTIEL CEA}}}}}
+         \fi
+         \ifdm@s@DiffusionCD
+         {\fboxrule1mm \fboxsep2mm \fcolorbox{red}{white}{\LARGE{\textcolor{red}{\textbf{CONFIDENTIEL DEFENSE}}}}}
+         \fi
+         \ifdm@s@DiffusionSD
+         {\fboxrule1.5mm \fboxsep2mm \fcolorbox{red}{white}{\LARGE{\textcolor{red}{\textbf{SECRET DEFENSE}}}}}
+         \fi
+       \fi
+       & \multicolumn{2}{l|}{
+         \ifdm@s@DiffusionNouR
+           {\small \underline{Réf} : \dm@s@abrService/\dm@s@abrLaboratoire/\dm@s@abrTypeDocument/\ifdm@s@haveNumeroChrono\dm@s@numeroChrono\else\textcolor{green}{\dm@s@defaultNumeroChrono}\fi}
+         \else
+           \begin{minipage}[b][0mm][c]{50mm}
+           {\small \textcolor{red} {CEA/DEN/DANS/DM2S/ \dm@s@referenceNumber/\dm@sdiffusion}}
+           \end{minipage}
+         \fi
+         } \\
+       \cline{3-4}
+       & 
+%----------- ajout bp
+       \ifdm@s@DiffusionNormale
+       \else
+         {\textcolor{red}{\textbf{\small Ne pas diffuser sans autorisation de l'émetteur}}}
+       \fi
+%----------- fin ajout bp
+%        & {\small \underline{Date} : \dm@s@dateOfficielle }  & {\small \underline{Indice}~:~\textbf{\dm@s@indice}} \\
+       & {\small \underline{Date} : \dm@s@dateOfficielle }  & {\small \underline{Indice}~:~{\dm@s@indice}} \\
+       \cline{2-4}
+       \ifdm@sPDF
+         \raisebox{-1ex}[0pt]{\hspace{6mm}\includegraphics[width=43mm,height=32mm]{CEA_FR_logotype}} & 
+       \else
+         \raisebox{-0.5mm}[0pt]{\hspace{0.75mm}\includegraphics[scale=0.254]{logo_cea_color}} &
+       \fi
+       \multicolumn{3}{l|}{%%
+         \begin{minipage}[c][10mm][c]{126mm}
+           \textbf{\dm@s@titrecourt}
+         \end{minipage} } \\
+       \hline
+     \end{tabular}}}
+     
+     
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ %% macro : dm@s@clearEmptyDoublePage      %%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ %% 
+ \def\dm@s@clearEmptyDoublePage{%
+   \newpage{\pagestyle{empty}\cleardoublepage}}
+
+   
+ %% ____________________________________________________________________________
+ %% |                                                                            |
+ %% |             CADRE en bas des pages  : macro dm@s@footerNote                |
+ %% |____________________________________________________________________________|
+ \def\dm@s@footerNote{
+     %% ajout bp (les tailles respectent le journal officiel de la Rep Francaise du 02/12/2011) 
+     \ifdm@s@DiffusionCCEA
+       \raisebox{-1ex}{\fboxrule1mm \fboxsep2mm \fcolorbox{red}{white}{{\LARGE\textcolor{red}{\textbf{CONFIDENTIEL CEA}}}}} \\
+     \fi
+     \ifdm@s@DiffusionCD
+       \raisebox{-1ex}{\fboxrule1mm \fboxsep2mm \fcolorbox{red}{white}{\LARGE\textcolor{red}{\textbf{CONFIDENTIEL DEFENSE}}}} \\
+       \textcolor{red}{\scriptsize Ce document ne doit être communiqué qu'aux personnes qualifiées pour le connaître} \\
+     \fi
+     \ifdm@s@DiffusionSD
+       \raisebox{-1ex}{\fboxrule1.5mm \fboxsep2mm \fcolorbox{red}{white}{{\LARGE\textcolor{red}{\textbf{SECRET DEFENSE}}}}} \\
+     \fi
+       %% fin ajout bp
+ \textcolor{red}{\scriptsize 
+   \ifdm@s@havebasdepage % modif BP
+     \textnormal{\dm@sbasdepage}
+   \else
+     Document propriété du {\textsc CEA} - Reproduction et diffusion externe au CEA soumises à l'autorisation de l'émetteur \\ \vspace{-1mm}
+     \ifdm@s@haveaction % modif BP
+       Document émis par le {\textsc CEA} dans le cadre de l'accord \dm@s@referenceAccord\ - Reproduction et diffusion soumises aux termes de l'accord
+     \fi
+   \fi}
+   }
+     
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+ %% macro : dm@s@footerNoteBIS             %%
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \def\dm@s@footerNoteBIS{
+   \par{\small Réf du formulaire : F1-DM2S/DIR/PR/003 classe \LaTeX\ {\textsc docDM2S} version C}
+   \begin{center}
+     {\small \dm@s@footerNote}
+   \end{center}
+   }
+     
+     
+ %% ----------------------
+ \sloppy
+ 
+ \setcounter{secnumdepth}{3}
+ \setcounter{tocdepth}{3}
+ %%%%%% fin de docDM2S.cls

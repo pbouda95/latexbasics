@@ -1,0 +1,447 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Preliminaire a tout rapport CEA Latex
+% Package + Commandes
+% BP, 03/12/2013
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{etex} %Loading etex, in this case the system will allocate instead the first free register in the extended pool, that is, from 256 to 32767.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%    general : polices, ...  %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \usepackage[scaled]{berasans}
+% % \usepackage[scaled]{uarial} % ne marche pas...
+% \renewcommand*\familydefault{\sfdefault}  %% Only if the base font of the document is to be sans serif
+\usepackage[T1]{fontenc}                       % Encodage du document (OUTPUT)
+\usepackage{amsmath,amssymb,amsfonts,mathrsfs} % Jeux de caracteres mathematiques
+\usepackage{xspace}    %% laisse un espace adequate pour raccourci
+\usepackage{layout}
+\usepackage{fixltx2e} % pour la commande \textsubscript
+\usepackage{textcomp} % symboles unicode hors math (Commande \textmu ou \textdegree par ex.) ; a utiliser avec [T1]{fontenc} 
+\usepackage{eurosym}                                    % Symbole EURO pour LaTeX
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%        equations         %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[thicklines]{cancel}                                     % permet de barrer des elements dans les equations
+\renewcommand{\CancelColor}{\color{red}} %change cancel color to red
+
+\usepackage{nccmath} % pour avoir mmatrix(=mini matrices)
+
+\usepackage{empheq} % pour encadrer les equations --> non compatbile avec dirtree !!??!!
+\newcommand*\widefbox[1]{\fbox{\hspace{1em}#1\hspace{1em}}}
+%\newcommand*\myempheqbox[1]{%
+%  \colorbox{light-blue}{\hspace{1em}#1\hspace{1em}} }
+\newcommand*\myempheqbox[1]{%
+  \fboxrule2pt
+  \fcolorbox{bleujoli}{light-blue}{\hspace{1em}#1\hspace{1em}}%
+}%
+%\setlength{\fboxrule}{1.5pt}%
+
+%\newcommand*\myempheqbox[1]{
+%\color{light-blue}{\hspace{1em}#1\hspace{1em}}}
+
+% nouvelles commandes pour les equations
+\newcommand{\abs}[1]{\lvert{#1}\rvert}
+\newcommand{\vect}[1]{ \underline{#1} }
+\newcommand{\tens}[1]{ \underline {\underline{#1}} }
+\newcommand{\tensd}[1]{ \underline {\underline{#1}} }
+\newcommand{\tensq}[1]{ \tensd{\tensd{#1}} }
+\newcommand{\grad}[1]{\nabla{#1}}
+
+% nombres complexes
+\newcommand{\cplx}[1]{ \boldsymbol{#1} }
+\renewcommand{\i}{\cplx{i}}
+\renewcommand\boldsymbol[1]{\pmb{#1}} %on utilise cette commande car il semble que notre systeme ne possede pas les polices gras
+
+% quelques operateurs : trace, divergence ...
+% - avec newcommand :
+    %\newcommand{\tr}[1]{ \ tr\,{#1}\ }
+    %\renewcommand{\div}[1]{ \ div\,{#1}\ }
+% - avec DeclareMathOperator et \ReDeclareMathOperator:
+% \newcommand{\ReDeclareMathOperator}[1]{%
+% \expandafter\let \csname #1\endcsname \undefined
+% \DeclareMathOperator{\csname #1\endcsname}%
+% } % bp : ne marche pas ... ``! Missing \endcsname inserted''
+\DeclareMathOperator{\tr}{tr} % operateur trace
+% \ReDeclareMathOperator{\div}{div} % operateur divergence
+\let\div\undefined
+\DeclareMathOperator{\div}{div} % operateur divergence
+\DeclareMathOperator{\perm}{perm} % operateur permutation
+\newcommand{\undemi}{\frac{1}{2}}
+\newcommand{\dt}{\Delta t}
+\newcommand{\e}{\epsilon}
+\newcommand{\drond}[2]{\frac{\partial{#1}}{\partial{#2}}}
+\newcommand{\ddroi}[2]{\frac{d{#1}}{d{#2}}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% flottants (tableaux, graphiques ...) %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%% pour les flottants et figures :
+
+%\usepackage{graphicx,subfigure,wrapfig}
+\usepackage{graphicx,subfig,wrapfig}                    % permet d'inserer des images .eps, des sous-figures et des figures entourees de texte
+\usepackage[final]{pdfpages}                            % Permet d'inserer des fichiers .ps ou .pdf dans le document
+\usepackage{caption}                                    % Personnalisation de l'apparence des etiquettes
+\captionsetup{justification=centering}
+% for figures: caption label is italic, the caption text is bold / italic
+\captionsetup[figure]{labelfont=normalfont,textfont={it}}  %=bf,it,normalfont
+\captionsetup[table]{labelfont=normalfont,textfont={it}}  %=bf,it,normalfont
+\usepackage{float}                                      % Autorise la creation de Floats personnalises
+% commandes de mise en forme des flottant (plus et moins = on accepte un espace de 8pt+/-2pt)
+% \setlength\floatsep %space left between floats
+% \setlength\textfloatsep{8pt plus 2pt minus 2pt} %space between last top float or first bottom float and the text
+% \setlength\intextsep{8pt plus 2pt minus 2pt}   %space left on top and bottom of an in-text float
+%   \setlength{\belowcaptionskip}{-6pt plus 2pt minus 2pt} %space below caption
+  \setlength{\belowcaptionskip}{4pt plus 2pt minus 2pt} %space below caption
+  \setlength{\abovecaptionskip}{4pt plus 2pt minus 2pt} % espace figure-caption= 5 +2 ou -2
+  \setlength{\textfloatsep}{8pt plus 2pt minus 4pt}     % espace float-text
+%   The default values in the article document class with the 10pt option are:
+%     \textfloatsep: 20.0pt plus 2.0pt minus 4.0pt;
+%     \floatsep: 12.0pt plus 2.0pt minus 2.0pt;
+%     \intextsep: 12.0pt plus 2.0pt minus 2.0pt.
+\usepackage[section]{placeins}                          % Met des barrieres au deplacement des Floats a travers le document
+\usepackage{afterpage}                                  % Met des barrieres au deplacement des Floats a travers le document
+
+% commandes de mise en forme de la page
+\renewcommand{\textfraction}{0.00} %fraction min du texte /page
+\renewcommand{\topfraction}{1.00} % fraction max de flottant / haut de page
+\renewcommand{\bottomfraction}{1.00} % fraction max de flottant / bas de page
+%\renewcommand{\floatpagefraction}{0.50}% fraction min de flottant pour creer une page de flottants
+\setcounter{topnumber}{12} %nbre max de flottant / haut de page
+\setcounter{bottomnumber}{12} %nbre max de flottant / bas de page
+\setcounter{totalnumber}{24} %nbre max de flottant / page
+
+\usepackage{tikz}  % pour annoter des figures
+\DeclareRobustCommand\sampleline[1]{%
+  \tikz\draw[#1] (0,0) (0,\the\dimexpr\fontdimen22\textfont2\relax)
+  -- (2em,\the\dimexpr\fontdimen22\textfont2\relax); %\sampleline{}, \sampleline{dashed}, sampleline{dotted}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% pour les tableaux :
+
+\usepackage[counterclockwise]{rotating}                 % Permet la rotation de tout type d'objet (surtout utile pour les tableaux)
+\usepackage{array,booktabs,longtable}                   % Personnalisation et amelioration de l'apparence des tableaux (+ permet leur eclatement sur plusieurs pages)
+% \usepackage{pst-all,pstricks}  % permet de dessiner (commande rput etc...) !UNIQUEMENT AVEC LATEX ET PAS PDFLATEX!
+\setlength{\aboverulesep}{0pt} % pour mettre a 0 l espace entre toprule et le reste du tableau
+\setlength{\belowrulesep}{0pt}
+
+\usepackage{tabularx}                   % package to adjust the table to the text width of tabularx
+\usepackage{ragged2e}                   % Getting better breaks in cells by ragged2e
+\usepackage{microtype}                  % Loading microtype for finer automatic justification
+\newcolumntype{Y}{>{\RaggedRight}X}             %ex: \begin{tabularx}{\textwidth}{P{2.5cm}lYYY}
+\newcolumntype{P}[1]{>{\RaggedRight}p{#1}}      %    \toprule ...   titi& toto ...  \midrule ...  \bottomrule
+ \setlength{\aboverulesep}{0pt} % pour mettre a 0pt ou 1pt ou autre l espace entre toprule et le reste du tableau
+\setlength{\belowrulesep}{0pt}
+\setlength{\abovetopsep}{0pt}
+% \captionsetup[table]{skip=1pt} % regel l'espace entre table et son caption  (\usepackage{caption})
+
+% commandes de mise en forme des flottant (plus et moins = on accepte un espace de 8pt+/-2pt)
+% \setlength\floatsep %space left between floats
+% \setlength\textfloatsep{8pt plus 2pt minus 2pt} %space between last top float or first bottom float and the text 
+% \setlength\intextsep{8pt plus 2pt minus 2pt}   %space left on top and bottom of an in-text float
+\setlength\belowcaptionskip{-6pt plus 2pt minus 2pt} %space below caption
+\usepackage{multirow}
+
+\usepackage{arydshln} % \hdashline and \cdashline commands which are the dashed counterparts of \hline and \cline
+
+
+%%%%%%%%%%%%%%%%%%%%%%%% pour les videos et objets 3D :
+%\usepackage{media9} % nécessite installation de latex3 ! l3regex.sty par exemple
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%     mise en page      %%%%%%%%%%%%%%%%%%%%%%%
+
+% \usepackage{fancyhdr}                                   % Personnalisation des entetes et des pieds de page
+\usepackage[titles,subfigure]{tocloft}                  % Personnalisation des ToC, LoF et LoT
+%pour la table des matières on reduit l'espacement pour faire en 1 page
+% \tweaktoc{2}{1}{1}{1} % from JC : niveau de paragraphe dans la table des matiere
+%% Aesthetic spacing redefines that look nicer to me than the defaults.
+%\setlength{\cftbeforechapskip}{2ex}
+\setlength{\cftbeforesecskip}{1ex}  % table of content
+%\setlength{\parskip}{0.8em} % from JC : espacement entre 2 paragraphes (0.0pt plus 1.0pt. par defaut)
+
+% \usepackage[titletoc]{appendix}                       % Personnalisation des annexes
+% \usepackage[toc,page]{appendix}                         % Personnalisation des annexes
+\usepackage[title,titletoc,page]{appendix}                         % Personnalisation des annexes
+% \usepackage[title,page]{appendix}                         % Personnalisation des annexes
+    \renewcommand{\appendixtocname}{Annexe}
+    \renewcommand{\appendixpagename}{Annexes}
+    \renewcommand{\appendixname}{Annexe}
+    \addappheadtotoc
+\let\cleardoublepage\clearpage
+
+\usepackage{verbatim}          % pour la commande \verbatiminput
+\usepackage{listings}          % Mise en forme de listings ou d'extraits de code
+% % Define Esope Language  ---------------- a copier apres \input{Preliminaire.tex}
+% \lstdefinelanguage{esope}
+% {
+%   % list of keywords
+%   morekeywords={
+%     character, complex, double precision, integer, logical, real, implicit,
+%     block data, call, close, common, continue, data, dimension, do, else, else if, end, endfile, endif, entry, equivalence, external, format, function, goto, go to, if, implicit, inquire, intrinsic, open, parameter, pause, print, program, read, return, rewind, rewrite, save, stop, subroutine, then, write,     % Fortran 77
+%     allocatable, allocate, case, contains, cycle, deallocate, elsewhere, exit, include, interface, intent, module, namelist, nullify, only, operator, optional, pointer, private, procedure, public, recursive, result, select, sequence, target, use, while, where    % Fortran 90
+%   },
+%   sensitive=false, % keywords are not case-sensitive
+%   morecomment=[f]C, % f is for C on fisrt column + line comment
+%   morecomment=[f]c, % f is for c on fisrt column + line comment
+%   morecomment=[f]*, % f is for * on fisrt column + line comment
+%   moredelim=[is][\normalfont\color{bleu}\itshape]{/*}{*/}
+% }
+% \lstset{
+%   language={esope},
+%   basicstyle=\small\ttfamily, % Global Code Style
+%   %captionpos=b, % Position of the Caption (t for top, b for bottom)
+%   extendedchars=true, % Allows 256 instead of 128 ASCII characters
+%   tabsize=2, % number of spaces indented when discovering a tab 
+%   columns=fixed, % make all characters equal width
+%   keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+%   showstringspaces=false, % lets spaces in strings appear as real spaces
+%   breaklines=true, % wrap lines if they don't fit
+%   linewidth=480pt, 
+%   %frame=tb, % draw a frame at the top, right, left and bottom of the listing
+%   %frameround=tttt, % make the frame round at all four corners
+%   %framesep=4pt, % quarter circle size of the round corners
+%   backgroundcolor=\color{grisclair},
+%   framexleftmargin=2mm, framexrightmargin=2mm,
+%   framextopmargin=2mm,framexbottommargin=2mm,
+%   frame=shadowbox, rulesepcolor=\color{gray},
+%   xleftmargin=12mm,
+%   %numbers=left, % show line numbers at the left
+%   %numberstyle=\tiny\ttfamily, % style of the line numbers
+%   commentstyle=\color{gris}\itshape,
+%   keywordstyle=\color{blue}\bfseries,
+%   emph={segment, endsegment, segini, segact, segdes, segadj, pointeur},  emphstyle=\color{vert}\bfseries,
+%   emph={[2]vrai,faux},  emphstyle={[2]\color{violet}\bfseries},
+%   stringstyle=\color{magenta}, % style of strings
+% }
+% Define Gibiane Language  ----------------
+\lstdefinelanguage{gibiane}
+{
+  % list of keywords
+%   morekeywords={
+%     mot, mots, tabl, table, 
+%     si, sino, sinon, fins, finsi,
+%     lect, prog, *, **, /, +, -,
+%     mode, mate, rigi, sigm, epsi, bsig, ksig,
+%   },
+  morekeywords={  % d'abord tiré de pilot
+      opti, born, dens, droi, lapl, cerc, mota, 
+      quel, inte, para, et  , poin, plus, moin, tran,
+      rota, trac, inve, cote, elem, cont, diff, chan, list,
+      surf, conf, info, tour, homo, affi, syme, incl, elim,
+      titr, racc, tass, sort, lire, bary, dall, orie, manu,
+      oubl, comp, cout, pave, comm, noeu, mot , nbel, nbno,
+      noti, face, coor, norm, temp, volu, lect, sauf, prog,
+      +   , -   , *   , /   , **  , flot, enti, log , exp ,
+      depl, psca, pvec, pmix, liai, regl, hook, sols, reso,
+      date, rigi, bloq, depi, hota, stru, text, proj, venv,
+      elst, jonc, reco, mass, clst, sigm, rela, forc, mome,
+      vloc, base, dime, extr, vers, vibr, maxi, xtmx, ytmx,
+      >   , <   , >eg , <eg , ou  , ega , non , neg , mult,
+      pjba, crit, diag, xtx , uniq, bsig, deda, max1, mots,
+      ipol, abs , sin , cos ,
+      atg , enve, isov, detr, enle, remp, inse, coli, tria,
+      tabl, redu, symt, anti, resu, pres, exco, nomc, saut,
+      defo, appu, inva, prin, vmis, ksig, sign, suit, 
+      valp, ordo, tire, rege, dess, amor, char, coul, chpo,
+      afco, evol, orth, thet, comb, deve, vect, pica, capi, 
+      copi, dimn, sauv, rest, cara, mate, gene,
+      capa, elfe, jaco, plas, gree, mode, finp, xty ,
+      debp, ktan, form, mess, nnor, cubp, cubt, cer3, fdt ,
+      seis, ener, epsi, intg, cour, reac, supe, zero, depb,
+      exci, kp  , acti, elas, erre, cong, lump, obte,
+      vari, modi, masq, exis, mini, grad, ense, ifre, dfou,
+      sigs, mapp, somm, brui, rten, dspr, tfr , tote,
+      graf, tres, type, osci, spo , inde, chsp,
+      tagr, perm, cabl, fofi, work, qulx, debi, 
+      cmoy, comt, cond, flux, rimp, filt, tfri,
+      conc, iter, acqu, sour, conv, acoh, psmo, asih, ecou,
+      mena, synt, argu, atah, dyne, fonc, resp, plac,
+      vale, proi, exce, aret, calp, indi, act3, biot,
+      dedu, conn, nloc, chai, cosi, cvol, diad, hann, insi,
+      lsqf, ltl , pert, prns, psrs, siar, spon, visa, cneq,
+      ccon, mesu, pile, simp, util, menu, cosh, sinh, tanh,
+      deg3, aide, racp, refe, ksof, nske, kmab,
+      noel, doma, fpu , gmv , eqpr, eqex, vibc, avct,
+      kdia, kmtp, kmf , mdia, dfdt, tcrr, tcnm, sqtp, somt,
+      nlin, cmct, kcht, lapn, raft, klop, kres, cson, fimp, 
+      nuag, weip, khis, kops, fsur, flam, elno,
+      dbit, ns  , toim, fimp, kmbt, kbbt, dudw, frot, tsca,
+      konv, kcha, mhyb, matp, hdeb, hvit, hybp, smtp, divu,
+      mocu, chau, tail, erf , sens, impo, dans, impf, ntab,
+      fron, fuit, epth, fpt , kfpt, fpa , kfpa, echi, qond,
+      kpro, ffor, raye, rayn, vsur, traj, aju1, aju2, frig,
+      excf, nomm, prec, erfc, onde, cfl , dedo, dcov, parc,
+      pola, chi1, chi2, pent, pret, meth, xxt , cblo, genj,
+      zleg, mesm, fion, neut, logk, coac, resi, mutu, sore,
+      diri, lign, obje, debm, finm, heri, deco, exte, dmmu,
+      dmtd, bmtd, ssch, mrem, assi, fiss, prim, annu, prob,
+      sais, choi, deto, part, clmi, pmat, excp, prop, phaj,
+      alea, gnfl, mpro, sste, adve, bgmo, ecfe, coup, verm,
+      dfer, gyro, cori, kent, fant, itrc, reto, ijet, impe,
+      moca, levm, ravc, idli, raff, cfnd, adet, psip, acos,
+      asin, tan , trie, gane, hist, etg , oter, xfem, rfco,
+      vide, voro, prra, posi, mise, misl, coll, pod,  
+    option, borne, droit, droite, point, moins, titre, % puis extension
+  },
+  morekeywords=[2]{  % quelques procedures
+    postvibr, brasero, pasapas, explorer
+  },
+  morekeywords=[3]{  % operateurs speciaux
+    si, sino, sinon, fins, finsi,
+    repe, repeter, quit, fin
+  },
+  sensitive=false, % keywords are not case-sensitive
+%  morecomment=[l]*, % l is for line comment
+  morecomment=[f]*, % f is for * on fisrt column + line comment
+%  morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+  morestring=[b]", % defines that strings are enclosed in double quotes
+  morestring=[b]', % defines that strings are enclosed in simple quotes
+%   moredelim=[is][\rmfamily\color{bleu}\itshape]{/*}{*/}
+%   moredelim=[is][\normalfont\color{bleu}\itshape]{/*}{*/}
+  moredelim=[is][\sffamily\slshape\color{bleujoli}]{/*}{*/}
+}
+\lstset{
+  language={gibiane},
+  basicstyle=\small\ttfamily, % Global Code Style
+  %captionpos=b, % Position of the Caption (t for top, b for bottom)
+  extendedchars=true, % Allows 256 instead of 128 ASCII characters
+  tabsize=2, % number of spaces indented when discovering a tab 
+  columns=fixed, % make all characters equal width
+  keepspaces=true, % does not ignore spaces to fit width, convert tabs to spaces
+  showstringspaces=false, % lets spaces in strings appear as real spaces
+  breaklines=true, % wrap lines if they don't fit
+  %linewidth=480pt, 
+  linewidth=510pt, 
+  %frame=tb, % draw a frame at the top, right, left and bottom of the listing
+  %frameround=tttt, % make the frame round at all four corners
+  %framesep=4pt, % quarter circle size of the round corners
+  backgroundcolor=\color{grisclair},
+  framexleftmargin=2mm, framexrightmargin=2mm,
+  framextopmargin=2mm,framexbottommargin=2mm,
+  frame=shadowbox, rulesepcolor=\color{gray},
+  xleftmargin=10mm,
+  %numbers=left, % show line numbers at the left
+  %numberstyle=\tiny\ttfamily, % style of the line numbers
+  commentstyle=\color{gris05},%\itshape,
+  keywordstyle=\color{blue}\bfseries,
+  keywordstyle=[2]\color{vert}\bfseries,
+  keywordstyle=[3]\color{dodge}\bfseries,
+%   emph={brasero},  emphstyle=\color{vert}\bfseries,
+  emph={[2]vrai,faux},  emphstyle={[2]\color{violet}\bfseries},
+  stringstyle=\color{magenta}, % style of strings
+}
+\renewcommand{\lstlistingname}{\textsc{Jeu de données}}% Listing -> Jeu de donnée
+\renewcommand{\lstlistlistingname}{Liste des jeux de données}% List of Listings -> Liste des jeux de données
+\newenvironment{mylst}  % utile pour faire un listing sur plusieurs pages
+  {\list{}{%
+    \leftmargin=0pt
+    \topsep=6pt
+    \listparindent=\parindent
+    \itemindent=\parindent
+  }\item\relax}
+  {\endlist}
+% exemple : \begin{mylst} 
+%           \lstinputlisting[caption={Analyse toto},captionpos=b,label=dgibi_toto]
+%            {code/toto.dgibi}
+%           \end{mylst}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%     couleurs      %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{color}
+\definecolor{grisclair}{rgb}{0.999,0.999,0.999}
+\definecolor{gris05}{rgb}{0.5,0.5,0.5}
+\definecolor{gris}{rgb}{0.3,0.3,0.3}
+\definecolor{orange}{rgb}{0.8,0.4,0}
+\definecolor{vert}{rgb}{0,0.5,0}
+\definecolor{rouge}{rgb}{0.7,0,0}
+\definecolor{purple}{rgb}{0.5,0.2,0.8}
+\definecolor{violet}{rgb}{0.5,0.1,0.5}
+\definecolor{bleu}{rgb}{0.0,0.1,0.5}
+\definecolor{bleujoli}{rgb}{0.3,0.5,0.9}
+\definecolor{bleuciel}{rgb}{0.2,0.2,0.9}
+\definecolor{dodge}{rgb}{0.12,0.56,1.0}
+\definecolor{ocre}{rgb}{0.5,0.1,0.0}
+%\definecolor{light-blue}{cmyk}{0.15,0,0,0}
+\definecolor{light-blue}{rgb}{0.9,0.95,1.}
+\definecolor{vertclair}{rgb}{1.,1.,0.9}
+
+\usepackage{xcolor} 
+% \newsavebox\MBox                       % pour souligner des termes en couleurs
+% \newcommand\Cline[2][red]{{\sbox\MBox{$#2$}%
+%   \rlap{\usebox\MBox}\color{#1}\rule[-1.5\dp\MBox]{\wd\MBox}{0.5pt}}}
+\makeatletter                            % pour avoir \colorhline{gray} par ex.
+\def\colorhline#1{%
+  \noalign{\ifnum0=`}\fi\begingroup\color{#1}\hrule \@height \arrayrulewidth\endgroup \futurelet
+   \reserved@a\@xhline}
+\makeatother
+
+\usepackage{colortbl} % pour les couleurs dans les tabular
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% mise en forme des liste itemize %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{enumerate}        % liste
+%   \setlength{\parskip}{2pt}   % Space between paragraphs outside of a list, and part of the space between a non-list paragraph and a list item.
+  \setlength{\topsep}{2pt}    % Extra space added to \parskip before the first and after the last item.
+   \setlength{\parsep}{0pt}   % Paragraph separation within a single item.
+   \setlength{\itemsep}{0pt}  % Extra inter-item spacing added to \parsep.
+%   \setlength{\partopsep}{10pt}% This is added to the top and/or bottom of the list if and only if there's a blank line above or below the first or last item. Leave this alone unless blank lines become a problem.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%% pour faire des arbres : package dirtree %%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{dirtree}
+\renewcommand*\DTstyle{\ttfamily\bfseries}
+\renewcommand*\DTstylecomment{\rmfamily\mdseries}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%   autres elements de mise en page   %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage{hyperref}
+%\hypersetup{colorlinks=true, linkcolor=blue, filecolor=blue, urlcolor=blue}
+% \hypersetup{colorlinks=true, linkcolor=blue, filecolor=black, urlcolor=magenta, citecolor=blue,
+% anchorcolor= black}
+% linkcolor=couleur des liens internes (\ref): num de pages, table des matières, num d'equat. et de fig. 
+% urlcolor = couleur des \cite : ref biblio si bibtex???
+% citecolor = couleur des \cite : ref biblio si bibitem???
+% rem : on met la tableofcontents en noir et le nombre de lastpage en noir dans docDM2S.cls
+% from JC  \hypersetup{
+% from JC     unicode=false,                                              % non-Latin characters in Acrobat s bookmarks
+% from JC     bookmarks=true,                                             % show Acrobats bookmarks bar?
+% from JC     pdftoolbar=true,                                            % show Acrobat s toolbar?
+% from JC     pdfmenubar=true,                                            % show Acrobat s menu?
+% from JC     pdffitwindow=false,                                         % window fit to page when opened
+% from JC     pdfstartview={FitH},                                        % fits the width of the page to the window
+% from JC     pdfnewwindow=true                                           % links in new window
+% from JC } 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Commande de mise en forme du texte (style persos)  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\textstyleEmphasis[1]{\textit{\textcolor{red}{#1}}}
+\newcommand\textcitation[1]{"\textit{#1}"}
+\newcommand\textoper[1]{\MakeUppercase{\texttt{#1}}}
+% \newcommand\textesope[1]{\textit{#1}}
+\newcommand\textesope[1]{\texttt{\textcolor{orange}{#1}}}
+\newcommand\textbrasero[1]{\textsc{#1}}
+\newcommand\textobjet[1]{\textit{\textsc{#1}}}
+
+\newcommand\textgibi[1]{\noindent\textcolor{black}{\texttt{{#1}}}}
+\newcommand\textcomment[1]{\noindent\textcolor{gris}{\texttt{#1}}}
+\newcommand\texttodo[1]{\textcolor{red}{\textit{#1}}}
+
+\newcommand\rem[1]{\noindent\textit{\textbf{Remarque : }#1}}
+\newcommand\myparagraph[1]{\paragraph{#1\\}}  
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}} % Une suite de neuf symboles plutot que des chiffres
+
+\newcommand{\etal}{\mbox{\emph{et al.\ }}} % on ecrit \etal pour et al en italique
+\newcommand{\ie}{\mbox{\emph{i. e.\ }}}
+\renewcommand\refeq[1]{(\ref{#1})}
+

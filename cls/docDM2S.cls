@@ -264,6 +264,10 @@
   \dm@s@setTypeDocument{Rapport Technique}{RT}
   \dm@s@isRapporttrue}
 
+\DeclareOption{rs}{
+  \dm@s@setTypeDocument{Rapport de Stage}{RS}
+  \dm@s@isRapporttrue}
+
 \DeclareOption{st}{
   \dm@s@setTypeDocument{Sp\'ecification}{ST}
   \dm@s@isSpecificationtrue}
@@ -1399,7 +1403,8 @@
      Commissariat \`a l'\'energie atomique et aux \'energies alternatives & & \\
      Centre de \dm@s@laboratoireCentre\ - \dm@s@abrDirection/\dm@s@abrSousDirection/\dm@s@abrDepartement/\dm@s@abrService/\dm@s@abrLaboratoire\ - BAT \dm@s@laboratoireBatiment\ - PC \dm@s@laboratoirePC\  & & \\
      91191 Gif sur Yvette Cedex - FRANCE & & \\
-     T\'el. : 33 - 1 69 08 \dm@s@laboratoireTel\  \hspace{2mm} Fax : 33 - 1 69 08 \dm@s@laboratoireFax\  \hspace{2mm} Secr\'etariat : \dm@s@laboratoireMail\/@cea.fr & & \\
+%     T\'el. : 33 - 1 69 08 \dm@s@laboratoireTel\  \hspace{2mm} Fax : 33 - 1 69 08 \dm@s@laboratoireFax\  \hspace{2mm} Secr\'etariat : \dm@s@laboratoireMail\/@cea.fr & & \\
+     T\'el. : 33 - 1 69 08 \dm@s@laboratoireTel\  \hspace{2mm} Secr\'etariat : \dm@s@laboratoireMail\/@cea.fr & & \\
      Etablissement public \`a caract\`ere industriel et commercial & & \\
      RCS PARIS B 775 685 019 &
 %      \ifdm@sPDF
